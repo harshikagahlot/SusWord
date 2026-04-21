@@ -1,0 +1,9 @@
+{
+  "name": "susword",
+  "version": "0.1.0",
+  "description": "Real-time multiplayer social deduction word game",
+  "private": true,
+  "keywords": ["game", "multiplayer", "social-deduction", "word-game"],
+  "author": "Harsh",
+  "license": "MIT"
+}

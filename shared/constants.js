@@ -1,0 +1,20 @@
+// Shared constants for SusWord
+
+export const GAME_STATES = {
+  HOME: 'HOME',           // Initial screen (Create/Join)
+  LOBBY: 'LOBBY',         // Waiting for players
+  REVEAL: 'REVEAL',       // Showing secret words/roles
+  CLUE_ROUND: 'CLUE_ROUND', // Players giving clues
+  VOTING: 'VOTING',       // Selecting the imposter
+  RESULT: 'RESULT',       // Final outcome reveal
+};
+
+export const PLAYER_ROLES = {
+  CIVILIAN: 'CIVILIAN',
+  IMPOSTER: 'IMPOSTER',
+};
+
+export const MIN_PLAYERS = 3;
+export const MAX_PLAYERS = 8;
+
+export const ROOM_CODE_LENGTH = 4;
