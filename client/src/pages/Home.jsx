@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 
 export default function Home() {
-  const { actions } = useGame()
+  const { actions, state } = useGame()
   const [name, setName] = useState('')
   const [roomCode, setRoomCode] = useState('')
   const [mode, setMode] = useState(null) // null | 'create' | 'join'
@@ -11,11 +11,17 @@ export default function Home() {
   const canJoin = name.trim().length >= 2 && roomCode.trim().length === 4
 
   const handleCreate = () => {
-    if (canCreate) actions.createRoom(name.trim())
+    if (canCreate) {
+      actions.clearError()
+      actions.createRoom(name.trim())
+    }
   }
 
   const handleJoin = () => {
-    if (canJoin) actions.joinRoom(name.trim(), roomCode.trim())
+    if (canJoin) {
+      actions.clearError()
+      actions.joinRoom(name.trim(), roomCode.trim())
+    }
   }
 
   return (
@@ -30,6 +36,13 @@ export default function Home() {
           Find the imposter. Guard your word.
         </p>
       </div>
+
+      {/* Error display */}
+      {state.error && (
+        <div className="card mb-4 border-danger/40 text-danger text-sm py-2.5 px-4">
+          {state.error}
+        </div>
+      )}
 
       {/* Name input */}
       <div className="mb-6">
@@ -82,7 +95,7 @@ export default function Home() {
           </button>
           <button
             className="btn btn-ghost"
-            onClick={() => setMode(null)}
+            onClick={() => { setMode(null); actions.clearError() }}
           >
             ← Back
           </button>
@@ -112,16 +125,16 @@ export default function Home() {
           </button>
           <button
             className="btn btn-ghost"
-            onClick={() => setMode(null)}
+            onClick={() => { setMode(null); actions.clearError() }}
           >
             ← Back
           </button>
         </div>
       )}
 
-      {/* Mock mode notice */}
+      {/* Connection indicator */}
       <p className="text-text-muted text-xs mt-8 opacity-60">
-        🧪 Mock mode — single browser simulation
+        🌐 Multiplayer — open in multiple tabs to test
       </p>
     </div>
   )

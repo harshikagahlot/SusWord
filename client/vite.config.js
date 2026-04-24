@@ -14,5 +14,11 @@ export default defineConfig({
     fs: {
       allow: ['..'],
     },
+    proxy: {
+      '/socket.io': {
+        target: 'http://localhost:3001',
+        ws: true,
+      },
+    },
   },
 })
