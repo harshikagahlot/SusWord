@@ -216,8 +216,8 @@ io.on('connection', (socket) => {
   socket.on('restart_round', (callback) => {
     const room = getRoomBySocketId(socket.id)
     if (!room) {
-      console.log(`❌ Restart failed: Room not found (Server likely restarted)`)
-      return callback?.({ error: 'Room not found. Please create a new room.' })
+      console.log(`❌ Restart failed: Room not found for socket ${socket.id}`)
+      return callback?.({ error: 'Room session lost. Please create a new room.' })
     }
 
     // Only host can restart
@@ -227,18 +227,18 @@ io.on('connection', (socket) => {
 
     // Must be in RESULT state to restart
     if (room.gameState !== 'RESULT') {
-      return callback?.({ error: 'Cannot restart yet' })
+      return callback?.({ error: 'Cannot restart while game is active' })
     }
 
-    // Start fresh round (resets state/data)
+    // Authoritative state transition
     startRound(room)
-    console.log(`🔄 Round restarted in ${room.roomCode} by host`)
+    console.log(`🔄 [${room.roomCode}] Round restarted by host ${socket.id}`)
 
     callback?.({ success: true })
 
-    // 1. Broadcast phase change to everyone in the room
+    // 1. Synchronized Room-wide update (shared data only)
     io.to(room.roomCode).emit('round_restarted', {
-      gameState: room.gameState,
+      gameState: room.gameState, // 'REVEAL'
       players: room.players.map(p => ({
         id: p.id,
         name: p.name,
@@ -246,10 +246,12 @@ io.on('connection', (socket) => {
       })),
     })
 
-    // 2. Separately emit private word assignments
+    // 2. Individual Private word delivery
     room.players.forEach(player => {
       const revealData = getPlayerRevealData(room, player.id)
-      io.to(player.id).emit('game-started', revealData)
+      if (revealData) {
+        io.to(player.id).emit('game-started', revealData)
+      }
     })
   })
 

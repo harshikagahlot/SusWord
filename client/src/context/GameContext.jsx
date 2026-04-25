@@ -151,12 +151,25 @@ function gameReducer(state, action) {
         },
       }
 
+    case 'GAME_STARTED':
+      return {
+        ...state,
+        gameState: GAME_STATES.REVEAL,
+        myWord: action.word,
+        players: action.players || state.players,
+        readyCount: 0,
+        totalCount: action.players?.length || state.players.length,
+        readyPlayerIds: [],
+        roundData: null,
+        error: null,
+      }
+
     case 'ROUND_RESTARTED':
       return {
         ...state,
         gameState: action.gameState,
         players: action.players,
-        myWord: null, // Reset until game-started arrives
+        myWord: null, // Reset and wait for individual game-started
         readyCount: 0,
         totalCount: action.players.length,
         readyPlayerIds: [],

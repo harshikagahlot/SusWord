@@ -37,12 +37,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Error display */}
-      {state.error && (
-        <div className="card mb-4 border-danger/40 text-danger text-sm py-2.5 px-4">
-          {state.error}
-        </div>
-      )}
+      </div>
 
       {/* Name input */}
       <div className="mb-6">
