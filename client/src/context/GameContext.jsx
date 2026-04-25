@@ -71,6 +71,7 @@ function gameReducer(state, action) {
         readyCount: 0,
         totalCount: action.players.length,
         readyPlayerIds: [],
+        roundData: null, // Clear stale data from previous round
         error: null,
       }
 
@@ -214,29 +215,37 @@ export function GameProvider({ children }) {
 
   const actions = {
     createRoom: useCallback(async (playerName) => {
-      const socket = await connectSocket()
-      socket.emit('create-room', { playerName }, (response) => {
-        if (response.error) return dispatch({ type: 'SET_ERROR', error: response.error })
-        dispatch({
-          type: 'ROOM_JOINED',
-          roomCode: response.roomCode,
-          playerId: response.playerId,
-          players: response.players.map(p => ({ ...p, isHost: p.id === response.hostId })),
+      try {
+        const socket = await connectSocket()
+        socket.emit('create-room', { playerName }, (response) => {
+          if (response.error) return dispatch({ type: 'SET_ERROR', error: response.error })
+          dispatch({
+            type: 'ROOM_JOINED',
+            roomCode: response.roomCode,
+            playerId: response.playerId,
+            players: response.players.map(p => ({ ...p, isHost: p.id === response.hostId })),
+          })
         })
-      })
+      } catch (err) {
+        dispatch({ type: 'SET_ERROR', error: 'Failed to connect to server. Is it running?' })
+      }
     }, []),
 
     joinRoom: useCallback(async (playerName, roomCode) => {
-      const socket = await connectSocket()
-      socket.emit('join-room', { roomCode, playerName }, (response) => {
-        if (response.error) return dispatch({ type: 'SET_ERROR', error: response.error })
-        dispatch({
-          type: 'ROOM_JOINED',
-          roomCode: response.roomCode,
-          playerId: response.playerId,
-          players: response.players.map(p => ({ ...p, isHost: p.id === response.hostId })),
+      try {
+        const socket = await connectSocket()
+        socket.emit('join-room', { roomCode, playerName }, (response) => {
+          if (response.error) return dispatch({ type: 'SET_ERROR', error: response.error })
+          dispatch({
+            type: 'ROOM_JOINED',
+            roomCode: response.roomCode,
+            playerId: response.playerId,
+            players: response.players.map(p => ({ ...p, isHost: p.id === response.hostId })),
+          })
         })
-      })
+      } catch (err) {
+        dispatch({ type: 'SET_ERROR', error: 'Failed to connect to server. Is it running?' })
+      }
     }, []),
 
     startGame: useCallback(() => {
@@ -262,6 +271,11 @@ export function GameProvider({ children }) {
     submitFinalGuess: useCallback((guess) => {
       const socket = getSocket()
       socket.emit('final-guess', { guess }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+    }, []),
+
+    restartGame: useCallback(() => {
+      const socket = getSocket()
+      socket.emit('restart-game', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
     leaveRoom: useCallback(() => {

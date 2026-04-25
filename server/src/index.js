@@ -14,7 +14,8 @@ const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      if (!origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      // Allow any localhost/127.0.0.1 origin or no origin (mobile apps/tools)
+      if (!origin || /^(https?:\/\/)?(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin)) {
         callback(null, true)
       } else {
         callback(new Error('Not allowed by CORS'))
@@ -208,6 +209,34 @@ io.on('connection', (socket) => {
       correct: result.correct,
       winner: result.winner,
       wordPair: result.wordPair,
+    })
+  })
+
+  // ── Restart Game (Phase 7) ───────────────────────────────
+  socket.on('restart-game', (callback) => {
+    const room = getRoomBySocketId(socket.id)
+    if (!room) return callback?.({ error: 'Room not found' })
+
+    // Only host can restart
+    if (room.hostId !== socket.id) {
+      return callback?.({ error: 'Only the host can start a new round' })
+    }
+
+    // Must be in RESULT state to restart
+    if (room.gameState !== 'RESULT') {
+      return callback?.({ error: 'Cannot restart yet' })
+    }
+
+    // Start fresh round (resets state/data)
+    startRound(room)
+    console.log(`🔄 Round restarted in ${room.roomCode} by host`)
+
+    callback?.({ success: true })
+
+    // Broadcast new game state to all
+    room.players.forEach(player => {
+      const revealData = getPlayerRevealData(room, player.id)
+      io.to(player.id).emit('game-started', revealData)
     })
   })
 

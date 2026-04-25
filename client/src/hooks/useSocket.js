@@ -21,17 +21,33 @@ export function getSocket() {
  * Connect to server and return a promise that resolves when connected.
  */
 export function connectSocket() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const s = getSocket()
     if (s.connected) {
       resolve(s)
       return
     }
-    s.connect()
-    s.once('connect', () => {
+
+    const onConnect = () => {
+      cleanup()
       console.log('🔌 Socket connected:', s.id)
       resolve(s)
-    })
+    }
+
+    const onError = (err) => {
+      cleanup()
+      console.error('🔌 Socket connection error:', err)
+      reject(err)
+    }
+
+    const cleanup = () => {
+      s.off('connect', onConnect)
+      s.off('connect_error', onError)
+    }
+
+    s.once('connect', onConnect)
+    s.once('connect_error', onError)
+    s.connect()
   })
 }
 

@@ -163,9 +163,19 @@ export default function Result() {
 
           {/* Actions */}
           <div className="flex flex-col gap-3 mt-6">
-            <div className="text-center text-text-muted text-sm py-2">
-              Game Over!
-            </div>
+            {isHost ? (
+              <button
+                id="play-again-btn"
+                className="btn btn-primary"
+                onClick={actions.restartGame}
+              >
+                ↻ Play Again
+              </button>
+            ) : (
+              <div className="text-center text-text-muted text-sm py-2">
+                Waiting for host to start next round...
+              </div>
+            )}
             <button
               id="leave-room-btn"
               className="btn btn-ghost"
