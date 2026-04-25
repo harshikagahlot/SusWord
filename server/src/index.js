@@ -215,27 +215,35 @@ io.on('connection', (socket) => {
   // ── Restart Game (Phase 7) ───────────────────────────────
   socket.on('restart-game', (callback) => {
     const room = getRoomBySocketId(socket.id)
-    if (!room) return callback?.({ error: 'Room not found' })
+    if (!room) {
+      console.log(`❌ Restart failed: Room not found for socket ${socket.id}`)
+      return callback?.({ error: 'Room not found' })
+    }
+
+    console.log(`🔄 Restart request from ${socket.id} in room ${room.roomCode}`)
 
     // Only host can restart
     if (room.hostId !== socket.id) {
+      console.log(`❌ Restart failed: Not the host (${socket.id} vs ${room.hostId})`)
       return callback?.({ error: 'Only the host can start a new round' })
     }
 
     // Must be in RESULT state to restart
     if (room.gameState !== 'RESULT') {
+      console.log(`❌ Restart failed: Game not in RESULT state (currently ${room.gameState})`)
       return callback?.({ error: 'Cannot restart yet' })
     }
 
     // Start fresh round (resets state/data)
     startRound(room)
-    console.log(`🔄 Round restarted in ${room.roomCode} by host`)
+    console.log(`✅ Round restarted successfully. New imposter: ${room.roundData.imposterId}`)
 
     callback?.({ success: true })
 
     // Broadcast new game state to all
     room.players.forEach(player => {
       const revealData = getPlayerRevealData(room, player.id)
+      console.log(`   📤 Emitting game-started to ${player.name} (${player.id})`)
       io.to(player.id).emit('game-started', revealData)
     })
   })

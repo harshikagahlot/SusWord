@@ -17,6 +17,7 @@ export default function Result() {
   // Final guess input
   const [guessInput, setGuessInput] = useState('')
   const [guessSubmitted, setGuessSubmitted] = useState(false)
+  const [isRestarting, setIsRestarting] = useState(false)
 
   const needsFinalGuess = imposterCaught && winner === null
   const showFinalGuessInput = needsFinalGuess && isCurrentPlayerImposter && !guessSubmitted
@@ -26,6 +27,28 @@ export default function Result() {
       setGuessSubmitted(true)
       actions.submitFinalGuess(guessInput.trim())
     }
+  }
+
+  const handleRestart = () => {
+    console.log('🔄 Requesting restart...')
+    setIsRestarting(true)
+    
+    actions.restartGame((response) => {
+      if (response?.error) {
+        console.error('❌ Restart failed:', response.error)
+        setIsRestarting(false)
+      } else {
+        console.log('✅ Restart command accepted by server')
+      }
+    })
+
+    // Safety timeout to reset button if server hangs
+    setTimeout(() => {
+      setIsRestarting(prev => {
+        if (prev) console.warn('⚠️ Restart timed out')
+        return false
+      })
+    }, 5000)
   }
 
   const winnerLabel = winner === 'IMPOSTER' ? '🕵️ Imposter Wins!' : '🎉 Civilians Win!'
@@ -167,9 +190,10 @@ export default function Result() {
               <button
                 id="play-again-btn"
                 className="btn btn-primary"
-                onClick={actions.restartGame}
+                onClick={handleRestart}
+                disabled={isRestarting}
               >
-                ↻ Play Again
+                {isRestarting ? '⌛ Starting...' : '↻ Play Again'}
               </button>
             ) : (
               <div className="text-center text-text-muted text-sm py-2">

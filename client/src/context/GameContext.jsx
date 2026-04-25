@@ -273,9 +273,12 @@ export function GameProvider({ children }) {
       socket.emit('final-guess', { guess }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
-    restartGame: useCallback(() => {
+    restartGame: useCallback((callback) => {
       const socket = getSocket()
-      socket.emit('restart-game', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+      socket.emit('restart-game', (r) => {
+        if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error })
+        if (callback) callback(r)
+      })
     }, []),
 
     leaveRoom: useCallback(() => {
