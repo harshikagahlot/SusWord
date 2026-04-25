@@ -37,7 +37,7 @@ export default function Home() {
         </p>
       </div>
 
-      </div>
+
 
       {/* Name input */}
       <div className="mb-6">
