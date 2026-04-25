@@ -1,5 +1,6 @@
 /**
- * Game manager — handles round creation, word assignment, and reveal readiness.
+ * Game manager — handles round creation, word assignment, reveal readiness,
+ * and clue round state.
  * Keeps round data on the room object in memory.
  */
 
@@ -29,18 +30,12 @@ const WORD_PAIRS = [
 
 /**
  * Start a new round for the given room.
- * Picks imposter, assigns words, stores round data on the room.
- * Returns the round data (server-side, contains all secrets).
  */
 function startRound(room) {
-  // Pick random word pair
   const wordPair = WORD_PAIRS[Math.floor(Math.random() * WORD_PAIRS.length)]
-
-  // Pick random imposter
   const imposterIdx = Math.floor(Math.random() * room.players.length)
   const imposterId = room.players[imposterIdx].id
 
-  // Build per-player assignments (private data, never broadcast)
   const assignments = {}
   room.players.forEach(p => {
     assignments[p.id] = {
@@ -48,29 +43,35 @@ function startRound(room) {
     }
   })
 
-  // Random turn order for clue round (prepared now, used later)
   const turnOrder = room.players
     .map(p => p.id)
     .sort(() => Math.random() - 0.5)
 
-  // Store round data on the room
   room.roundData = {
     wordPair,
     imposterId,
     assignments,
     turnOrder,
     readyPlayers: [],
+    // Clue round state
+    clues: [],
+    currentTurnIdx: 0,
+    clueRoundComplete: false,
+    // Voting state
+    votes: {},            // { voterId: targetId }
+    votedPlayers: [],
+    votedOutId: null,
+    voteTally: null,
+    winner: null,
+    finalGuess: null,
   }
 
-  // Update room state
   room.gameState = 'REVEAL'
-
   return room.roundData
 }
 
 /**
  * Get the PRIVATE reveal payload for a specific player.
- * Only contains their own word — no other player's data.
  */
 function getPlayerRevealData(room, socketId) {
   const rd = room.roundData
@@ -89,7 +90,6 @@ function getPlayerRevealData(room, socketId) {
 
 /**
  * Mark a player as ready after viewing their card.
- * Returns { allReady, readyCount, totalCount }
  */
 function setPlayerReady(room, socketId) {
   const rd = room.roundData
@@ -106,4 +106,179 @@ function setPlayerReady(room, socketId) {
   return { allReady, readyCount, totalCount }
 }
 
-module.exports = { startRound, getPlayerRevealData, setPlayerReady }
+// ── Clue Round Logic ───────────────────────────────────────
+
+function submitClue(room, socketId, clueText) {
+  const rd = room.roundData
+  if (!rd) return { error: 'No round data' }
+  if (room.gameState !== 'CLUE_ROUND') return { error: 'Not in clue round' }
+
+  const currentPlayerId = rd.turnOrder[rd.currentTurnIdx]
+  if (socketId !== currentPlayerId) return { error: 'Not your turn' }
+  if (rd.clues.some(c => c.playerId === socketId)) return { error: 'Already submitted' }
+
+  const trimmed = clueText?.trim()
+  if (!trimmed) return { error: 'Clue cannot be empty' }
+
+  const player = room.players.find(p => p.id === socketId)
+  rd.clues.push({ playerId: socketId, playerName: player?.name || 'Unknown', clue: trimmed })
+
+  rd.currentTurnIdx++
+  if (rd.currentTurnIdx >= rd.turnOrder.length) {
+    rd.clueRoundComplete = true
+    room.gameState = 'VOTING'
+  }
+
+  return { success: true, clueRoundComplete: rd.clueRoundComplete }
+}
+
+function getClueRoundState(room) {
+  const rd = room.roundData
+  if (!rd) return null
+
+  return {
+    gameState: room.gameState,
+    turnOrder: rd.turnOrder,
+    currentTurnIdx: rd.currentTurnIdx,
+    currentTurnPlayerId: rd.clueRoundComplete ? null : rd.turnOrder[rd.currentTurnIdx],
+    clues: rd.clues,
+    clueRoundComplete: rd.clueRoundComplete,
+    players: room.players.map(p => ({ id: p.id, name: p.name, isHost: p.id === room.hostId })),
+  }
+}
+
+function handleClueDisconnect(room, disconnectedId) {
+  const rd = room.roundData
+  if (!rd || room.gameState !== 'CLUE_ROUND') return false
+
+  const idx = rd.turnOrder.indexOf(disconnectedId)
+  if (idx !== -1) {
+    rd.turnOrder.splice(idx, 1)
+    if (idx < rd.currentTurnIdx) rd.currentTurnIdx--
+  }
+
+  if (rd.currentTurnIdx >= rd.turnOrder.length) {
+    rd.clueRoundComplete = true
+    room.gameState = 'VOTING'
+  }
+  return true
+}
+
+// ── Voting Logic ───────────────────────────────────────────
+
+/**
+ * Submit a vote. Returns { error } or { success, allVoted }
+ */
+function submitVote(room, voterId, targetId) {
+  const rd = room.roundData
+  if (!rd) return { error: 'No round data' }
+  if (room.gameState !== 'VOTING') return { error: 'Not in voting phase' }
+  if (rd.votedPlayers.includes(voterId)) return { error: 'Already voted' }
+
+  // Cannot vote for yourself
+  if (voterId === targetId) return { error: 'Cannot vote for yourself' }
+
+  // Target must be a valid player
+  if (!room.players.some(p => p.id === targetId)) return { error: 'Invalid target' }
+
+  rd.votes[voterId] = targetId
+  rd.votedPlayers.push(voterId)
+
+  const allVoted = rd.votedPlayers.length >= room.players.length
+
+  return { success: true, allVoted, votedCount: rd.votedPlayers.length, totalCount: room.players.length }
+}
+
+/**
+ * Count votes and determine who is voted out.
+ * Ties broken randomly. Returns result data.
+ */
+function resolveVotes(room) {
+  const rd = room.roundData
+  if (!rd) return null
+
+  // Tally votes
+  const tally = {}
+  Object.values(rd.votes).forEach(targetId => {
+    tally[targetId] = (tally[targetId] || 0) + 1
+  })
+
+  const maxVotes = Math.max(...Object.values(tally), 0)
+  const tied = Object.keys(tally).filter(id => tally[id] === maxVotes)
+  const votedOutId = tied[Math.floor(Math.random() * tied.length)]
+
+  rd.votedOutId = votedOutId
+  rd.voteTally = tally
+
+  const imposterCaught = votedOutId === rd.imposterId
+
+  if (imposterCaught) {
+    // Imposter caught — they get a chance to guess the main word
+    // winner stays null until final guess
+    rd.winner = null
+    room.gameState = 'RESULT'
+  } else {
+    // Imposter NOT caught — imposter wins immediately
+    rd.winner = 'IMPOSTER'
+    room.gameState = 'RESULT'
+  }
+
+  return {
+    votedOutId,
+    voteTally: tally,
+    imposterCaught,
+    imposterId: rd.imposterId,
+    winner: rd.winner,
+    wordPair: rd.wordPair,
+    players: room.players.map(p => ({
+      id: p.id,
+      name: p.name,
+      isHost: p.id === room.hostId,
+      isImposter: p.id === rd.imposterId,
+    })),
+  }
+}
+
+/**
+ * Submit the imposter's final guess of the main word.
+ */
+function submitFinalGuess(room, guess) {
+  const rd = room.roundData
+  if (!rd || rd.winner !== null) return { error: 'No final guess needed' }
+
+  const trimmed = guess?.trim()
+  if (!trimmed) return { error: 'Guess cannot be empty' }
+
+  rd.finalGuess = trimmed
+  const correct = trimmed.toLowerCase() === rd.wordPair.mainWord.toLowerCase()
+  rd.winner = correct ? 'IMPOSTER' : 'CIVILIANS'
+
+  return {
+    success: true,
+    finalGuess: trimmed,
+    correct,
+    winner: rd.winner,
+    wordPair: rd.wordPair,
+  }
+}
+
+/**
+ * Reset room back to lobby for a new round.
+ */
+function resetToLobby(room) {
+  room.gameState = 'LOBBY'
+  room.roundData = null
+}
+
+module.exports = {
+  startRound,
+  getPlayerRevealData,
+  setPlayerReady,
+  submitClue,
+  getClueRoundState,
+  handleClueDisconnect,
+  submitVote,
+  resolveVotes,
+  submitFinalGuess,
+  resetToLobby,
+}

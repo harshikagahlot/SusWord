@@ -1,7 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react'
-import { GAME_STATES, PLAYER_ROLES } from '@shared/constants'
+import { GAME_STATES } from '@shared/constants'
 import { getSocket, connectSocket, disconnectSocket } from '../hooks/useSocket'
-import * as gameLogic from '../mock/gameLogic'
 
 const GameContext = createContext(null)
 
@@ -40,13 +39,29 @@ function gameReducer(state, action) {
         })),
       }
 
+    case 'BACK_TO_LOBBY':
+      return {
+        ...state,
+        gameState: GAME_STATES.LOBBY,
+        players: action.players.map(p => ({
+          ...p,
+          isHost: p.id === action.hostId,
+        })),
+        roundData: null,
+        myWord: null,
+        readyCount: 0,
+        totalCount: 0,
+        readyPlayerIds: [],
+        error: null,
+      }
+
     case 'SET_ERROR':
       return { ...state, error: action.error }
 
     case 'CLEAR_ERROR':
       return { ...state, error: null }
 
-    // ── Game Start + Reveal (Phase 4 — real server data) ───
+    // ── Reveal ─────────────────────────────────────────────
     case 'GAME_STARTED':
       return {
         ...state,
@@ -67,82 +82,72 @@ function gameReducer(state, action) {
         readyPlayerIds: action.readyPlayerIds,
       }
 
-    case 'ALL_PLAYERS_READY':
+    // ── Clue Round ─────────────────────────────────────────
+    case 'CLUE_ROUND_STARTED':
+    case 'CLUE_ROUND_UPDATE':
       return {
         ...state,
         gameState: GAME_STATES.CLUE_ROUND,
         roundData: {
+          ...state.roundData,
           turnOrder: action.turnOrder,
-          currentTurnIdx: 0,
+          currentTurnIdx: action.currentTurnIdx,
+          currentTurnPlayerId: action.currentTurnPlayerId,
+          clues: action.clues,
+          clueRoundComplete: action.clueRoundComplete,
         },
-        players: action.players.map(p => ({
-          ...p,
-          clue: null,
-          vote: null,
-        })),
+        players: action.players || state.players,
       }
 
-    // ── Game round (mock for now — Phase 5 will replace) ───
-    case 'GO_TO_CLUES':
-      return { ...state, gameState: GAME_STATES.CLUE_ROUND }
-
-    case 'SUBMIT_CLUE': {
-      const newPlayers = state.players.map(p =>
-        p.id === action.playerId ? { ...p, clue: action.clue } : p
-      )
+    case 'CLUE_ROUND_COMPLETE':
       return {
         ...state,
-        players: newPlayers,
+        gameState: GAME_STATES.VOTING,
         roundData: {
           ...state.roundData,
-          currentTurnIdx: state.roundData.currentTurnIdx + 1,
+          clues: action.clues,
+          clueRoundComplete: true,
+        },
+        players: action.players || state.players,
+      }
+
+    // ── Voting ─────────────────────────────────────────────
+    case 'VOTE_UPDATE':
+      return {
+        ...state,
+        roundData: {
+          ...state.roundData,
+          votedCount: action.votedCount,
+          totalCount: action.totalCount,
         },
       }
-    }
 
-    case 'GO_TO_VOTING':
-      return { ...state, gameState: GAME_STATES.VOTING }
-
-    case 'RESOLVE_VOTES':
+    case 'VOTE_RESULT':
       return {
         ...state,
         gameState: GAME_STATES.RESULT,
         roundData: {
           ...state.roundData,
-          votes: action.allVotes,
           votedOutId: action.votedOutId,
-          voteTally: action.tally,
+          voteTally: action.voteTally,
+          imposterCaught: action.imposterCaught,
+          imposterId: action.imposterId,
           winner: action.winner,
+          wordPair: action.wordPair,
         },
+        players: action.players || state.players,
       }
 
-    case 'SUBMIT_FINAL_GUESS':
+    case 'FINAL_GUESS_RESULT':
       return {
         ...state,
         roundData: {
           ...state.roundData,
-          finalGuess: action.guess,
+          finalGuess: action.finalGuess,
           winner: action.winner,
+          wordPair: action.wordPair,
         },
       }
-
-    case 'RESTART_ROUND': {
-      const resetPlayers = state.players.map(p => ({
-        ...p,
-        role: null,
-        word: null,
-        clue: null,
-        vote: null,
-      }))
-      const { players, roundData } = gameLogic.assignRoles(resetPlayers)
-      return {
-        ...state,
-        gameState: GAME_STATES.REVEAL,
-        players,
-        roundData,
-        myWord: null,
-      }
-    }
 
     case 'LEAVE_ROOM':
       return { ...initialState }
@@ -155,65 +160,73 @@ function gameReducer(state, action) {
 export function GameProvider({ children }) {
   const [state, dispatch] = useReducer(gameReducer, initialState)
 
-  // ── Listen for socket events ─────────────────────────────
   useEffect(() => {
     const socket = getSocket()
 
-    const handleLobbyUpdate = ({ players, hostId }) => {
-      dispatch({
-        type: 'LOBBY_UPDATE',
-        players,
-        hostId,
-      })
-    }
+    socket.on('lobby-update', ({ players, hostId }) => {
+      dispatch({ type: 'LOBBY_UPDATE', players, hostId })
+    })
 
-    // Phase 4: receive PRIVATE word data from server
-    const handleGameStarted = ({ word, players, gameState }) => {
-      dispatch({
-        type: 'GAME_STARTED',
-        word,
-        players,
-      })
-    }
+    socket.on('game-started', ({ word, players }) => {
+      dispatch({ type: 'GAME_STARTED', word, players })
+    })
 
-    const handleReadyUpdate = ({ readyCount, totalCount, readyPlayerIds }) => {
+    socket.on('ready-update', ({ readyCount, totalCount, readyPlayerIds }) => {
       dispatch({ type: 'READY_UPDATE', readyCount, totalCount, readyPlayerIds })
-    }
+    })
 
-    const handleAllReady = ({ gameState, turnOrder, players }) => {
-      dispatch({ type: 'ALL_PLAYERS_READY', turnOrder, players })
-    }
+    socket.on('clue-round-started', (data) => {
+      dispatch({ type: 'CLUE_ROUND_STARTED', ...data })
+    })
 
-    socket.on('lobby-update', handleLobbyUpdate)
-    socket.on('game-started', handleGameStarted)
-    socket.on('ready-update', handleReadyUpdate)
-    socket.on('all-players-ready', handleAllReady)
+    socket.on('clue-round-update', (data) => {
+      dispatch({ type: 'CLUE_ROUND_UPDATE', ...data })
+    })
+
+    socket.on('clue-round-complete', (data) => {
+      dispatch({ type: 'CLUE_ROUND_COMPLETE', ...data })
+    })
+
+    socket.on('vote-update', (data) => {
+      dispatch({ type: 'VOTE_UPDATE', ...data })
+    })
+
+    socket.on('vote-result', (data) => {
+      dispatch({ type: 'VOTE_RESULT', ...data })
+    })
+
+    socket.on('final-guess-result', (data) => {
+      dispatch({ type: 'FINAL_GUESS_RESULT', ...data })
+    })
+
+    socket.on('back-to-lobby', (data) => {
+      dispatch({ type: 'BACK_TO_LOBBY', ...data })
+    })
 
     return () => {
-      socket.off('lobby-update', handleLobbyUpdate)
-      socket.off('game-started', handleGameStarted)
-      socket.off('ready-update', handleReadyUpdate)
-      socket.off('all-players-ready', handleAllReady)
+      socket.off('lobby-update')
+      socket.off('game-started')
+      socket.off('ready-update')
+      socket.off('clue-round-started')
+      socket.off('clue-round-update')
+      socket.off('clue-round-complete')
+      socket.off('vote-update')
+      socket.off('vote-result')
+      socket.off('final-guess-result')
+      socket.off('back-to-lobby')
     }
   }, [])
 
-  // ── Action creators ──────────────────────────────────────
   const actions = {
     createRoom: useCallback(async (playerName) => {
       const socket = await connectSocket()
       socket.emit('create-room', { playerName }, (response) => {
-        if (response.error) {
-          dispatch({ type: 'SET_ERROR', error: response.error })
-          return
-        }
+        if (response.error) return dispatch({ type: 'SET_ERROR', error: response.error })
         dispatch({
           type: 'ROOM_JOINED',
           roomCode: response.roomCode,
           playerId: response.playerId,
-          players: response.players.map(p => ({
-            ...p,
-            isHost: p.id === response.hostId,
-          })),
+          players: response.players.map(p => ({ ...p, isHost: p.id === response.hostId })),
         })
       })
     }, []),
@@ -221,39 +234,44 @@ export function GameProvider({ children }) {
     joinRoom: useCallback(async (playerName, roomCode) => {
       const socket = await connectSocket()
       socket.emit('join-room', { roomCode, playerName }, (response) => {
-        if (response.error) {
-          dispatch({ type: 'SET_ERROR', error: response.error })
-          return
-        }
+        if (response.error) return dispatch({ type: 'SET_ERROR', error: response.error })
         dispatch({
           type: 'ROOM_JOINED',
           roomCode: response.roomCode,
           playerId: response.playerId,
-          players: response.players.map(p => ({
-            ...p,
-            isHost: p.id === response.hostId,
-          })),
+          players: response.players.map(p => ({ ...p, isHost: p.id === response.hostId })),
         })
       })
     }, []),
 
     startGame: useCallback(() => {
       const socket = getSocket()
-      socket.emit('start-game', (response) => {
-        if (response?.error) {
-          dispatch({ type: 'SET_ERROR', error: response.error })
-        }
-      })
+      socket.emit('start-game', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
-    // Phase 4: tell server this player has viewed their card
     markReady: useCallback(() => {
       const socket = getSocket()
-      socket.emit('player-ready', (response) => {
-        if (response?.error) {
-          dispatch({ type: 'SET_ERROR', error: response.error })
-        }
-      })
+      socket.emit('player-ready', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+    }, []),
+
+    submitClue: useCallback((clue) => {
+      const socket = getSocket()
+      socket.emit('submit-clue', { clue }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+    }, []),
+
+    submitVote: useCallback((targetId) => {
+      const socket = getSocket()
+      socket.emit('submit-vote', { targetId }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+    }, []),
+
+    submitFinalGuess: useCallback((guess) => {
+      const socket = getSocket()
+      socket.emit('final-guess', { guess }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+    }, []),
+
+    playAgain: useCallback(() => {
+      const socket = getSocket()
+      socket.emit('play-again', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
     leaveRoom: useCallback(() => {
@@ -263,45 +281,7 @@ export function GameProvider({ children }) {
       dispatch({ type: 'LEAVE_ROOM' })
     }, []),
 
-    clearError: useCallback(() => {
-      dispatch({ type: 'CLEAR_ERROR' })
-    }, []),
-
-    // ── Mock game actions (still local until Phase 5) ──────
-    goToClues: () => dispatch({ type: 'GO_TO_CLUES' }),
-
-    submitClue: (playerId, clue) => {
-      dispatch({ type: 'SUBMIT_CLUE', playerId, clue })
-    },
-
-    goToVoting: () => dispatch({ type: 'GO_TO_VOTING' }),
-
-    resolveVotes: (userVoteTargetId) => {
-      const mockVotes = gameLogic.generateMockVotes(state.players, state.currentPlayerId)
-      const allVotes = {
-        ...mockVotes,
-        [state.currentPlayerId]: userVoteTargetId,
-      }
-      const { votedOutId, tally } = gameLogic.resolveVotes(allVotes)
-      const votedOutPlayer = state.players.find(p => p.id === votedOutId)
-      const imposterCaught = votedOutPlayer?.role === PLAYER_ROLES.IMPOSTER
-      const winner = imposterCaught ? null : 'IMPOSTER'
-      dispatch({ type: 'RESOLVE_VOTES', allVotes, votedOutId, tally, winner })
-    },
-
-    submitFinalGuess: (guess) => {
-      const correct = gameLogic.checkFinalGuess(
-        guess,
-        state.roundData.wordPair.mainWord
-      )
-      dispatch({
-        type: 'SUBMIT_FINAL_GUESS',
-        guess,
-        winner: correct ? 'IMPOSTER' : 'CIVILIANS',
-      })
-    },
-
-    restartRound: () => dispatch({ type: 'RESTART_ROUND' }),
+    clearError: useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), []),
   }
 
   return (

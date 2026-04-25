@@ -3,19 +3,18 @@ import { useGame } from '../context/GameContext'
 
 export default function Voting() {
   const { state, actions } = useGame()
-  const { players, currentPlayerId } = state
+  const { players, currentPlayerId, roundData } = state
   const [selectedId, setSelectedId] = useState(null)
   const [hasVoted, setHasVoted] = useState(false)
 
   const otherPlayers = players.filter(p => p.id !== currentPlayerId)
+  const votedCount = roundData?.votedCount || 0
+  const totalCount = roundData?.totalCount || players.length
 
   const handleVote = () => {
     if (selectedId && !hasVoted) {
       setHasVoted(true)
-      // Small delay to show the vote, then resolve
-      setTimeout(() => {
-        actions.resolveVotes(selectedId)
-      }, 600)
+      actions.submitVote(selectedId)
     }
   }
 
@@ -27,7 +26,7 @@ export default function Voting() {
         </h2>
         <p className="text-sm text-text-muted">
           {hasVoted
-            ? 'Votes are being counted...'
+            ? `Waiting for votes — ${votedCount} / ${totalCount}`
             : 'Who do you think is the imposter?'
           }
         </p>
@@ -49,7 +48,6 @@ export default function Voting() {
                   : 'hover:border-text-muted/30'
               } ${hasVoted ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
-              {/* Avatar */}
               <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
                 isSelected
                   ? 'bg-danger/20 text-danger'
@@ -85,10 +83,10 @@ export default function Voting() {
         </button>
       )}
 
-      {/* Loading indicator */}
+      {/* Waiting indicator */}
       {hasVoted && (
         <div className="text-center text-text-muted text-sm animate-pulse">
-          Counting votes...
+          Counting votes... {votedCount} / {totalCount}
         </div>
       )}
     </div>

@@ -1,46 +1,35 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useGame } from '../context/GameContext'
-import { generateMockClue } from '../mock/gameLogic'
 
 export default function ClueRound() {
   const { state, actions } = useGame()
   const { players, currentPlayerId, roundData } = state
-  const { turnOrder, currentTurnIdx } = roundData
+  const { turnOrder, currentTurnIdx, currentTurnPlayerId, clues, clueRoundComplete } = roundData || {}
 
   const [clueInput, setClueInput] = useState('')
+  const [submitted, setSubmitted] = useState(false)
 
-  const allDone = currentTurnIdx >= turnOrder.length
-  const currentTurnPlayerId = allDone ? null : turnOrder[currentTurnIdx]
   const isMyTurn = currentTurnPlayerId === currentPlayerId
   const currentTurnPlayer = players.find(p => p.id === currentTurnPlayerId)
-
-  // Get clues in order they were submitted
-  const submittedClues = turnOrder.slice(0, currentTurnIdx).map(id => {
-    const player = players.find(p => p.id === id)
-    return { name: player?.name, clue: player?.clue, id }
-  })
-
-  // Auto-submit mock player clues after a short delay
-  useEffect(() => {
-    if (allDone || isMyTurn || !currentTurnPlayerId) return
-
-    const timer = setTimeout(() => {
-      const mockClue = generateMockClue()
-      actions.submitClue(currentTurnPlayerId, mockClue)
-    }, 800)
-
-    return () => clearTimeout(timer)
-  }, [currentTurnIdx, allDone, isMyTurn, currentTurnPlayerId])
+  const allDone = clueRoundComplete
 
   const handleSubmit = () => {
-    if (clueInput.trim() && isMyTurn) {
-      actions.submitClue(currentPlayerId, clueInput.trim())
+    const trimmed = clueInput.trim()
+    if (trimmed && isMyTurn && !submitted) {
+      setSubmitted(true)
+      actions.submitClue(trimmed)
       setClueInput('')
+      // submitted flag resets when turn advances (component re-renders with new currentTurnPlayerId)
     }
   }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') handleSubmit()
+  }
+
+  // Reset submitted state when it becomes my turn again (shouldn't happen, but safety)
+  if (isMyTurn && submitted) {
+    setSubmitted(false)
   }
 
   return (
@@ -52,7 +41,7 @@ export default function ClueRound() {
         <p className="text-sm text-text-muted">
           {allDone
             ? 'All clues submitted!'
-            : `Turn ${currentTurnIdx + 1} of ${turnOrder.length}`
+            : `Turn ${(currentTurnIdx || 0) + 1} of ${turnOrder?.length || 0}`
           }
         </p>
       </div>
@@ -73,7 +62,7 @@ export default function ClueRound() {
       )}
 
       {/* Clue input (only on my turn) */}
-      {isMyTurn && (
+      {isMyTurn && !submitted && (
         <div className="mb-5">
           <div className="flex gap-2">
             <input
@@ -102,32 +91,35 @@ export default function ClueRound() {
         </div>
       )}
 
+      {/* Waiting after submit */}
+      {isMyTurn && submitted && (
+        <div className="card-elevated text-center mb-5">
+          <p className="text-accent text-sm animate-pulse">Submitting...</p>
+        </div>
+      )}
+
       {/* Submitted clues list */}
-      {submittedClues.length > 0 && (
+      {clues && clues.length > 0 && (
         <div className="mb-5">
           <p className="text-text-muted text-xs uppercase tracking-widest mb-2">
             Clues so far
           </p>
           <div className="flex flex-col gap-2">
-            {submittedClues.map(({ name, clue, id }) => (
-              <div key={id} className="card py-2.5 px-4">
-                <p className="text-xs text-text-muted mb-0.5">{name}</p>
-                <p className="text-sm font-medium">"{clue}"</p>
+            {clues.map((c, i) => (
+              <div key={i} className="card py-2.5 px-4">
+                <p className="text-xs text-text-muted mb-0.5">{c.playerName}</p>
+                <p className="text-sm font-medium">"{c.clue}"</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Proceed to voting */}
+      {/* Auto-transition: voting screen will show via state change */}
       {allDone && (
-        <button
-          id="go-to-voting-btn"
-          className="btn btn-primary"
-          onClick={actions.goToVoting}
-        >
-          → Proceed to Voting
-        </button>
+        <div className="text-center text-text-muted text-sm animate-pulse">
+          Moving to voting...
+        </div>
       )}
     </div>
   )

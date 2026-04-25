@@ -3,7 +3,7 @@ const http = require('http')
 const { Server } = require('socket.io')
 const cors = require('cors')
 const { createRoom, joinRoom, leaveRoom, getRoom, getRoomBySocketId } = require('./roomManager')
-const { startRound, getPlayerRevealData, setPlayerReady } = require('./gameManager')
+const { startRound, getPlayerRevealData, setPlayerReady, submitClue, getClueRoundState, handleClueDisconnect, submitVote, resolveVotes, submitFinalGuess, resetToLobby } = require('./gameManager')
 
 const PORT = 3001
 
@@ -24,7 +24,6 @@ const io = new Server(server, {
   },
 })
 
-// Health check
 app.get('/', (req, res) => {
   res.json({ status: 'SusWord server running', port: PORT })
 })
@@ -77,7 +76,7 @@ io.on('connection', (socket) => {
     handleDisconnect(socket)
   })
 
-  // ── Start Game (Phase 4 — real round) ────────────────────
+  // ── Start Game ───────────────────────────────────────────
   socket.on('start-game', (callback) => {
     const room = getRoomBySocketId(socket.id)
 
@@ -86,14 +85,12 @@ io.on('connection', (socket) => {
     if (room.players.length < 3) return callback?.({ error: 'Need at least 3 players' })
     if (room.gameState !== 'LOBBY') return callback?.({ error: 'Game already in progress' })
 
-    // Create round: pick imposter, assign words
     startRound(room)
     console.log(`🎮 Round started in ${room.roomCode} | Imposter: ${room.roundData.imposterId}`)
     console.log(`   Words: "${room.roundData.wordPair.mainWord}" / "${room.roundData.wordPair.imposterWord}"`)
 
     callback?.({ success: true })
 
-    // Send PRIVATE reveal data to each player individually
     room.players.forEach(player => {
       const revealData = getPlayerRevealData(room, player.id)
       io.to(player.id).emit('game-started', revealData)
@@ -112,7 +109,6 @@ io.on('connection', (socket) => {
 
     callback?.({ success: true })
 
-    // Broadcast ready count to all players in room
     io.to(room.roomCode).emit('ready-update', {
       readyCount: result.readyCount,
       totalCount: result.totalCount,
@@ -121,20 +117,116 @@ io.on('connection', (socket) => {
 
     console.log(`✅ ${socket.id} ready (${result.readyCount}/${result.totalCount}) in ${room.roomCode}`)
 
-    // If all ready, move to clue round placeholder
+    // All ready → start clue round
     if (result.allReady) {
       room.gameState = 'CLUE_ROUND'
-      io.to(room.roomCode).emit('all-players-ready', {
-        gameState: room.gameState,
-        turnOrder: room.roundData.turnOrder,
+      const clueState = getClueRoundState(room)
+      io.to(room.roomCode).emit('clue-round-started', clueState)
+      console.log(`📝 Clue round started in ${room.roomCode}`)
+    }
+  })
+
+  // ── Submit Clue (Phase 5) ────────────────────────────────
+  socket.on('submit-clue', ({ clue }, callback) => {
+    const room = getRoomBySocketId(socket.id)
+    if (!room) return callback?.({ error: 'Room not found' })
+
+    const result = submitClue(room, socket.id, clue)
+    if (result.error) return callback?.({ error: result.error })
+
+    const player = room.players.find(p => p.id === socket.id)
+    console.log(`💬 ${player?.name} submitted clue in ${room.roomCode}`)
+
+    callback?.({ success: true })
+
+    // Broadcast updated clue round state to all players
+    const clueState = getClueRoundState(room)
+    io.to(room.roomCode).emit('clue-round-update', clueState)
+
+    // If clue round complete, notify transition to voting
+    if (result.clueRoundComplete) {
+      console.log(`🗳️  Clue round complete in ${room.roomCode} — moving to VOTING`)
+      io.to(room.roomCode).emit('clue-round-complete', {
+        gameState: 'VOTING',
+        clues: room.roundData.clues,
         players: room.players.map(p => ({
           id: p.id,
           name: p.name,
           isHost: p.id === room.hostId,
         })),
       })
-      console.log(`🚀 All ready in ${room.roomCode} — moving to CLUE_ROUND`)
     }
+  })
+
+  // ── Submit Vote ──────────────────────────────────────────
+  socket.on('submit-vote', ({ targetId }, callback) => {
+    const room = getRoomBySocketId(socket.id)
+    if (!room) return callback?.({ error: 'Room not found' })
+
+    const result = submitVote(room, socket.id, targetId)
+    if (result.error) return callback?.({ error: result.error })
+
+    const player = room.players.find(p => p.id === socket.id)
+    console.log(`🗳️  ${player?.name} voted in ${room.roomCode} (${result.votedCount}/${result.totalCount})`)
+
+    callback?.({ success: true })
+
+    // Broadcast vote progress
+    io.to(room.roomCode).emit('vote-update', {
+      votedCount: result.votedCount,
+      totalCount: result.totalCount,
+    })
+
+    // If all voted, resolve and broadcast results
+    if (result.allVoted) {
+      const voteResult = resolveVotes(room)
+      console.log(`📊 Votes resolved in ${room.roomCode} | Voted out: ${voteResult.votedOutId} | Imposter caught: ${voteResult.imposterCaught}`)
+
+      io.to(room.roomCode).emit('vote-result', voteResult)
+    }
+  })
+
+  // ── Final Guess (imposter caught) ────────────────────────
+  socket.on('final-guess', ({ guess }, callback) => {
+    const room = getRoomBySocketId(socket.id)
+    if (!room) return callback?.({ error: 'Room not found' })
+
+    // Only the imposter can guess
+    if (socket.id !== room.roundData?.imposterId) {
+      return callback?.({ error: 'Only the imposter can guess' })
+    }
+
+    const result = submitFinalGuess(room, guess)
+    if (result.error) return callback?.({ error: result.error })
+
+    console.log(`🎯 Final guess in ${room.roomCode}: "${result.finalGuess}" — ${result.correct ? 'CORRECT' : 'WRONG'}`)
+
+    callback?.({ success: true })
+
+    io.to(room.roomCode).emit('final-guess-result', {
+      finalGuess: result.finalGuess,
+      correct: result.correct,
+      winner: result.winner,
+      wordPair: result.wordPair,
+    })
+  })
+
+  // ── Play Again (back to lobby) ───────────────────────────
+  socket.on('play-again', (callback) => {
+    const room = getRoomBySocketId(socket.id)
+    if (!room) return callback?.({ error: 'Room not found' })
+    if (socket.id !== room.hostId) return callback?.({ error: 'Only the host can restart' })
+
+    resetToLobby(room)
+    console.log(`🔄 Room ${room.roomCode} reset to lobby`)
+
+    callback?.({ success: true })
+
+    io.to(room.roomCode).emit('back-to-lobby', {
+      gameState: 'LOBBY',
+      players: room.players,
+      hostId: room.hostId,
+    })
   })
 
   // ── Disconnect ───────────────────────────────────────────
@@ -152,10 +244,28 @@ function handleDisconnect(socket) {
   socket.leave(roomCode)
 
   if (room) {
-    // If in reveal phase, check if remaining players are all ready
+    // Clean up during reveal
     if (room.gameState === 'REVEAL' && room.roundData) {
-      // Remove disconnected player from ready list
       room.roundData.readyPlayers = room.roundData.readyPlayers.filter(id => id !== socket.id)
+    }
+
+    // Clean up during clue round (skip disconnected player's turn)
+    if (room.gameState === 'CLUE_ROUND' && room.roundData) {
+      handleClueDisconnect(room, socket.id)
+      const clueState = getClueRoundState(room)
+      io.to(roomCode).emit('clue-round-update', clueState)
+
+      if (room.roundData.clueRoundComplete) {
+        io.to(roomCode).emit('clue-round-complete', {
+          gameState: 'VOTING',
+          clues: room.roundData.clues,
+          players: room.players.map(p => ({
+            id: p.id,
+            name: p.name,
+            isHost: p.id === room.hostId,
+          })),
+        })
+      }
     }
 
     io.to(roomCode).emit('lobby-update', {

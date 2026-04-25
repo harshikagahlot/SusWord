@@ -1,40 +1,31 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
-import { PLAYER_ROLES } from '@shared/constants'
 
 export default function Result() {
   const { state, actions } = useGame()
   const { players, currentPlayerId, roundData } = state
-  const { votedOutId, voteTally, winner, wordPair, imposterId, finalGuess, votes } = roundData
+  const {
+    votedOutId, voteTally, winner, wordPair, imposterId,
+    imposterCaught, finalGuess,
+  } = roundData || {}
 
   const votedOutPlayer = players.find(p => p.id === votedOutId)
-  const imposterPlayer = players.find(p => p.id === imposterId)
-  const imposterCaught = votedOutPlayer?.role === PLAYER_ROLES.IMPOSTER
+  const isCurrentPlayerImposter = currentPlayerId === imposterId
   const currentPlayer = players.find(p => p.id === currentPlayerId)
-  const isCurrentPlayerImposter = currentPlayer?.role === PLAYER_ROLES.IMPOSTER
+  const isHost = currentPlayer?.isHost
 
-  // Final guess state (only if imposter was caught)
+  // Final guess input
   const [guessInput, setGuessInput] = useState('')
   const [guessSubmitted, setGuessSubmitted] = useState(false)
 
   const needsFinalGuess = imposterCaught && winner === null
   const showFinalGuessInput = needsFinalGuess && isCurrentPlayerImposter && !guessSubmitted
 
-  // If imposter was caught but current player is NOT the imposter, auto-simulate guess
-  const showWaitingForGuess = needsFinalGuess && !isCurrentPlayerImposter && !finalGuess
-
   const handleGuess = () => {
     if (guessInput.trim()) {
       setGuessSubmitted(true)
       actions.submitFinalGuess(guessInput.trim())
     }
-  }
-
-  // For mock mode: if imposter is a mock player and was caught, auto-submit a wrong guess
-  if (needsFinalGuess && !isCurrentPlayerImposter && !finalGuess && !guessSubmitted) {
-    setTimeout(() => {
-      actions.submitFinalGuess('wrong guess')
-    }, 1500)
   }
 
   const winnerLabel = winner === 'IMPOSTER' ? '🕵️ Imposter Wins!' : '🎉 Civilians Win!'
@@ -51,7 +42,7 @@ export default function Result() {
         </div>
       )}
 
-      {/* Final guess step (imposter caught, awaiting guess) */}
+      {/* Final guess (imposter caught, awaiting guess) */}
       {showFinalGuessInput && (
         <div className="card-elevated text-center mb-6 border-danger/40">
           <p className="text-danger font-bold text-lg mb-1">You were caught!</p>
@@ -81,13 +72,14 @@ export default function Result() {
         </div>
       )}
 
-      {showWaitingForGuess && !winner && (
+      {/* Waiting for imposter guess */}
+      {needsFinalGuess && !isCurrentPlayerImposter && (
         <div className="text-center mb-6 animate-pulse">
           <p className="text-text-muted">Imposter is making their final guess...</p>
         </div>
       )}
 
-      {/* Vote result */}
+      {/* Result details (shown after winner is determined) */}
       {winner && (
         <>
           {/* Voted out info */}
@@ -98,15 +90,15 @@ export default function Result() {
             <p className="text-xl font-bold">
               {votedOutPlayer?.name}
               <span className={`ml-2 badge ${imposterCaught ? 'badge-danger' : 'badge-muted'}`}>
-                {votedOutPlayer?.role}
+                {imposterCaught ? 'IMPOSTER' : 'CIVILIAN'}
               </span>
             </p>
             {finalGuess && (
               <p className="text-sm text-text-muted mt-2">
                 Final guess: <span className="font-medium text-text-primary">"{finalGuess}"</span>
                 {' '}
-                <span className={finalGuess.toLowerCase().trim() === wordPair.mainWord.toLowerCase().trim() ? 'text-accent' : 'text-danger'}>
-                  {finalGuess.toLowerCase().trim() === wordPair.mainWord.toLowerCase().trim() ? '✓ Correct!' : '✗ Wrong'}
+                <span className={finalGuess.toLowerCase().trim() === wordPair?.mainWord?.toLowerCase().trim() ? 'text-accent' : 'text-danger'}>
+                  {finalGuess.toLowerCase().trim() === wordPair?.mainWord?.toLowerCase().trim() ? '✓ Correct!' : '✗ Wrong'}
                 </span>
               </p>
             )}
@@ -116,15 +108,15 @@ export default function Result() {
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="card text-center">
               <p className="text-text-muted text-xs mb-1">Main Word</p>
-              <p className="text-lg font-bold text-accent">{wordPair.mainWord}</p>
+              <p className="text-lg font-bold text-accent">{wordPair?.mainWord}</p>
             </div>
             <div className="card text-center">
               <p className="text-text-muted text-xs mb-1">Imposter Word</p>
-              <p className="text-lg font-bold text-danger">{wordPair.imposterWord}</p>
+              <p className="text-lg font-bold text-danger">{wordPair?.imposterWord}</p>
             </div>
           </div>
 
-          {/* All roles */}
+          {/* All players */}
           <div className="mb-4">
             <p className="text-text-muted text-xs uppercase tracking-widest mb-2">
               All Players
@@ -132,7 +124,7 @@ export default function Result() {
             <div className="flex flex-col gap-1.5">
               {players.map(player => {
                 const votesReceived = voteTally?.[player.id] || 0
-                const isImposter = player.role === PLAYER_ROLES.IMPOSTER
+                const isImposter = player.id === imposterId || player.isImposter
                 return (
                   <div
                     key={player.id}
@@ -169,13 +161,20 @@ export default function Result() {
 
           {/* Actions */}
           <div className="flex flex-col gap-3 mt-6">
-            <button
-              id="play-again-btn"
-              className="btn btn-primary"
-              onClick={actions.restartRound}
-            >
-              ↻ Play Again
-            </button>
+            {isHost && (
+              <button
+                id="play-again-btn"
+                className="btn btn-primary"
+                onClick={actions.playAgain}
+              >
+                ↻ Play Again
+              </button>
+            )}
+            {!isHost && (
+              <div className="text-center text-text-muted text-sm py-2">
+                Waiting for host to start next round...
+              </div>
+            )}
             <button
               id="leave-room-btn"
               className="btn btn-ghost"
