@@ -33,7 +33,7 @@ export default function Result() {
     console.log('🔄 Requesting restart...')
     setIsRestarting(true)
     
-    actions.restartGame((response) => {
+    actions.restartRound((response) => {
       if (response?.error) {
         console.error('❌ Restart failed:', response.error)
         setIsRestarting(false)

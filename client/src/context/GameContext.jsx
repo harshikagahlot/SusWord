@@ -145,9 +145,23 @@ function gameReducer(state, action) {
         roundData: {
           ...state.roundData,
           finalGuess: action.finalGuess,
+          correct: action.correct,
           winner: action.winner,
           wordPair: action.wordPair,
         },
+      }
+
+    case 'ROUND_RESTARTED':
+      return {
+        ...state,
+        gameState: action.gameState,
+        players: action.players,
+        myWord: null, // Reset until game-started arrives
+        readyCount: 0,
+        totalCount: action.players.length,
+        readyPlayerIds: [],
+        roundData: null,
+        error: null,
       }
 
     case 'LEAVE_ROOM':
@@ -200,6 +214,10 @@ export function GameProvider({ children }) {
       dispatch({ type: 'FINAL_GUESS_RESULT', ...data })
     })
 
+    socket.on('round_restarted', (data) => {
+      dispatch({ type: 'ROUND_RESTARTED', ...data })
+    })
+
     return () => {
       socket.off('lobby-update')
       socket.off('game-started')
@@ -210,6 +228,7 @@ export function GameProvider({ children }) {
       socket.off('vote-update')
       socket.off('vote-result')
       socket.off('final-guess-result')
+      socket.off('round_restarted')
     }
   }, [])
 
@@ -273,9 +292,9 @@ export function GameProvider({ children }) {
       socket.emit('final-guess', { guess }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
-    restartGame: useCallback((callback) => {
+    restartRound: useCallback((callback) => {
       const socket = getSocket()
-      socket.emit('restart-game', (r) => {
+      socket.emit('restart_round', (r) => {
         if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error })
         if (callback) callback(r)
       })
