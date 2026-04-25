@@ -199,10 +199,6 @@ export function GameProvider({ children }) {
       dispatch({ type: 'FINAL_GUESS_RESULT', ...data })
     })
 
-    socket.on('back-to-lobby', (data) => {
-      dispatch({ type: 'BACK_TO_LOBBY', ...data })
-    })
-
     return () => {
       socket.off('lobby-update')
       socket.off('game-started')
@@ -213,7 +209,6 @@ export function GameProvider({ children }) {
       socket.off('vote-update')
       socket.off('vote-result')
       socket.off('final-guess-result')
-      socket.off('back-to-lobby')
     }
   }, [])
 
@@ -267,11 +262,6 @@ export function GameProvider({ children }) {
     submitFinalGuess: useCallback((guess) => {
       const socket = getSocket()
       socket.emit('final-guess', { guess }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
-    }, []),
-
-    playAgain: useCallback(() => {
-      const socket = getSocket()
-      socket.emit('play-again', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
     leaveRoom: useCallback(() => {

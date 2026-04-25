@@ -191,7 +191,7 @@ function submitVote(room, voterId, targetId) {
 
 /**
  * Count votes and determine who is voted out.
- * Ties broken randomly. Returns result data.
+ * Tie rule: If tie, no one is eliminated -> Imposter wins.
  */
 function resolveVotes(room) {
   const rd = room.roundData
@@ -203,25 +203,34 @@ function resolveVotes(room) {
     tally[targetId] = (tally[targetId] || 0) + 1
   })
 
-  const maxVotes = Math.max(...Object.values(tally), 0)
+  const voteValues = Object.values(tally)
+  const maxVotes = voteValues.length > 0 ? Math.max(...voteValues) : 0
   const tied = Object.keys(tally).filter(id => tally[id] === maxVotes)
-  const votedOutId = tied[Math.floor(Math.random() * tied.length)]
+
+  let votedOutId = null
+  let imposterCaught = false
+
+  // If there's a tie for the highest votes (and more than 0 votes cast), no one is eliminated
+  if (tied.length > 1 || maxVotes === 0) {
+    votedOutId = null
+    imposterCaught = false
+    rd.winner = 'IMPOSTER' // On tie or no votes, imposter survives and wins
+  } else {
+    votedOutId = tied[0]
+    imposterCaught = votedOutId === rd.imposterId
+
+    if (imposterCaught) {
+      // Imposter caught — they get a chance to guess the main word
+      rd.winner = null
+    } else {
+      // Civilian voted out — imposter wins immediately
+      rd.winner = 'IMPOSTER'
+    }
+  }
 
   rd.votedOutId = votedOutId
   rd.voteTally = tally
-
-  const imposterCaught = votedOutId === rd.imposterId
-
-  if (imposterCaught) {
-    // Imposter caught — they get a chance to guess the main word
-    // winner stays null until final guess
-    rd.winner = null
-    room.gameState = 'RESULT'
-  } else {
-    // Imposter NOT caught — imposter wins immediately
-    rd.winner = 'IMPOSTER'
-    room.gameState = 'RESULT'
-  }
+  room.gameState = 'RESULT'
 
   return {
     votedOutId,
@@ -262,14 +271,6 @@ function submitFinalGuess(room, guess) {
   }
 }
 
-/**
- * Reset room back to lobby for a new round.
- */
-function resetToLobby(room) {
-  room.gameState = 'LOBBY'
-  room.roundData = null
-}
-
 module.exports = {
   startRound,
   getPlayerRevealData,
@@ -280,5 +281,5 @@ module.exports = {
   submitVote,
   resolveVotes,
   submitFinalGuess,
-  resetToLobby,
 }
+

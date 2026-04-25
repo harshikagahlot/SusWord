@@ -85,13 +85,15 @@ export default function Result() {
           {/* Voted out info */}
           <div className="card-elevated mb-4 text-center">
             <p className="text-text-muted text-xs uppercase tracking-widest mb-1">
-              Voted Out
+              {votedOutId ? 'Voted Out' : 'Voting Result'}
             </p>
             <p className="text-xl font-bold">
-              {votedOutPlayer?.name}
-              <span className={`ml-2 badge ${imposterCaught ? 'badge-danger' : 'badge-muted'}`}>
-                {imposterCaught ? 'IMPOSTER' : 'CIVILIAN'}
-              </span>
+              {votedOutId ? votedOutPlayer?.name : 'No one was eliminated! (Tie)'}
+              {votedOutId && (
+                <span className={`ml-2 badge ${imposterCaught ? 'badge-danger' : 'badge-muted'}`}>
+                  {imposterCaught ? 'IMPOSTER' : 'CIVILIAN'}
+                </span>
+              )}
             </p>
             {finalGuess && (
               <p className="text-sm text-text-muted mt-2">
@@ -161,20 +163,9 @@ export default function Result() {
 
           {/* Actions */}
           <div className="flex flex-col gap-3 mt-6">
-            {isHost && (
-              <button
-                id="play-again-btn"
-                className="btn btn-primary"
-                onClick={actions.playAgain}
-              >
-                ↻ Play Again
-              </button>
-            )}
-            {!isHost && (
-              <div className="text-center text-text-muted text-sm py-2">
-                Waiting for host to start next round...
-              </div>
-            )}
+            <div className="text-center text-text-muted text-sm py-2">
+              Game Over!
+            </div>
             <button
               id="leave-room-btn"
               className="btn btn-ghost"

@@ -3,7 +3,7 @@ const http = require('http')
 const { Server } = require('socket.io')
 const cors = require('cors')
 const { createRoom, joinRoom, leaveRoom, getRoom, getRoomBySocketId } = require('./roomManager')
-const { startRound, getPlayerRevealData, setPlayerReady, submitClue, getClueRoundState, handleClueDisconnect, submitVote, resolveVotes, submitFinalGuess, resetToLobby } = require('./gameManager')
+const { startRound, getPlayerRevealData, setPlayerReady, submitClue, getClueRoundState, handleClueDisconnect, submitVote, resolveVotes, submitFinalGuess } = require('./gameManager')
 
 const PORT = 3001
 
@@ -208,24 +208,6 @@ io.on('connection', (socket) => {
       correct: result.correct,
       winner: result.winner,
       wordPair: result.wordPair,
-    })
-  })
-
-  // ── Play Again (back to lobby) ───────────────────────────
-  socket.on('play-again', (callback) => {
-    const room = getRoomBySocketId(socket.id)
-    if (!room) return callback?.({ error: 'Room not found' })
-    if (socket.id !== room.hostId) return callback?.({ error: 'Only the host can restart' })
-
-    resetToLobby(room)
-    console.log(`🔄 Room ${room.roomCode} reset to lobby`)
-
-    callback?.({ success: true })
-
-    io.to(room.roomCode).emit('back-to-lobby', {
-      gameState: 'LOBBY',
-      players: room.players,
-      hostId: room.hostId,
     })
   })
 
