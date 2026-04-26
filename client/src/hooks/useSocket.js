@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client'
 
-const SERVER_URL = 'http://localhost:3001'
+// Use environment variable for deployed backend, fallback to local dev server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001'
 
 // Single socket instance shared across the app
 let socket = null

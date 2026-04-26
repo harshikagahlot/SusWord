@@ -15,7 +15,8 @@ const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
       // Allow any localhost/127.0.0.1 origin or no origin (mobile apps/tools)
-      if (!origin || /^(https?:\/\/)?(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin)) {
+      const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : []
+      if (!origin || /^(https?:\/\/)?(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin) || allowedOrigins.includes(origin)) {
         callback(null, true)
       } else {
         callback(new Error('Not allowed by CORS'))
@@ -290,6 +291,20 @@ function handleDisconnect(socket) {
             name: p.name,
             isHost: p.id === room.hostId,
           })),
+        })
+      }
+    }
+
+    // Clean up during voting
+    if (room.gameState === 'VOTING' && room.roundData) {
+      const allVoted = room.players.every(p => room.roundData.votedPlayers.includes(p.id))
+      if (allVoted) {
+        const voteResult = resolveVotes(room)
+        io.to(roomCode).emit('vote-result', voteResult)
+      } else {
+        io.to(roomCode).emit('vote-update', {
+          votedCount: room.roundData.votedPlayers.filter(id => room.players.some(p => p.id === id)).length,
+          totalCount: room.players.length,
         })
       }
     }

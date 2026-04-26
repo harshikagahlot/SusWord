@@ -196,7 +196,7 @@ export default function Result() {
                 {isRestarting ? '⌛ Starting...' : '↻ Play Again'}
               </button>
             ) : (
-              <div className="text-center text-text-muted text-sm py-2">
+              <div className="text-center text-text-muted text-sm py-2 animate-pulse">
                 Waiting for host to start next round...
               </div>
             )}

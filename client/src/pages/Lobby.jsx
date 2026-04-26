@@ -1,15 +1,23 @@
+import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 import { MIN_PLAYERS, MAX_PLAYERS } from '@shared/constants'
 
 export default function Lobby() {
   const { state, actions } = useGame()
+  const [isStarting, setIsStarting] = useState(false)
   const { room, players, currentPlayerId } = state
   const currentPlayer = players.find(p => p.id === currentPlayerId)
   const isHost = currentPlayer?.isHost
-  const canStart = players.length >= MIN_PLAYERS
+  const canStart = players.length >= MIN_PLAYERS && !isStarting
 
   const handleCopyCode = () => {
     navigator.clipboard?.writeText(room.roomCode)
+  }
+
+  const handleStart = () => {
+    setIsStarting(true)
+    actions.startGame()
+    setTimeout(() => setIsStarting(false), 5000) // Fallback reset
   }
 
   return (
@@ -80,12 +88,14 @@ export default function Lobby() {
           <button
             id="start-game-btn"
             className="btn btn-primary"
-            disabled={!canStart}
-            onClick={actions.startGame}
+            disabled={!canStart || isStarting}
+            onClick={handleStart}
           >
-            {canStart
-              ? '▶ Start Game'
-              : `Need ${MIN_PLAYERS - players.length} more player${MIN_PLAYERS - players.length !== 1 ? 's' : ''}`
+            {isStarting 
+              ? 'Starting...' 
+              : canStart
+                ? '▶ Start Game'
+                : `Need ${MIN_PLAYERS - players.length} more player${MIN_PLAYERS - players.length !== 1 ? 's' : ''}`
             }
           </button>
         )}
