@@ -8,11 +8,18 @@ let socket = null
 
 export function getSocket() {
   if (!socket) {
+    console.log('🔌 Initializing socket connection to:', SERVER_URL)
     socket = io(SERVER_URL, {
       autoConnect: false,
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      transports: ['websocket', 'polling'], // Production-safe transports
+    })
+    
+    // Add temporary global error logging
+    socket.on('connect_error', (err) => {
+      console.error('🔌 Socket global connect_error:', err.message, err)
     })
   }
   return socket
