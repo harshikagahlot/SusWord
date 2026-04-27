@@ -16,7 +16,7 @@ const screens = {
 }
 
 export default function App() {
-  const { state } = useGame()
+  const { state, actions } = useGame()
   const Screen = screens[state.gameState] || Home
 
   return (

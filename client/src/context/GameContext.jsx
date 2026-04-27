@@ -180,6 +180,15 @@ function gameReducer(state, action) {
     case 'LEAVE_ROOM':
       return { ...initialState }
 
+    case 'DISCONNECTED':
+      if (state.gameState !== GAME_STATES.HOME) {
+        return {
+          ...initialState,
+          error: 'Connection lost. Please rejoin the room.',
+        }
+      }
+      return state
+
     default:
       return state
   }
@@ -192,10 +201,12 @@ export function GameProvider({ children }) {
     const socket = getSocket()
 
     socket.on('lobby-update', ({ players, hostId }) => {
+      console.log('📥 LOBBY_UPDATE:', players.length, 'players')
       dispatch({ type: 'LOBBY_UPDATE', players, hostId })
     })
 
     socket.on('game-started', ({ word, players }) => {
+      console.log('📥 GAME_STARTED! Word received.')
       dispatch({ type: 'GAME_STARTED', word, players })
     })
 
@@ -231,6 +242,11 @@ export function GameProvider({ children }) {
       dispatch({ type: 'ROUND_RESTARTED', ...data })
     })
 
+    const onDisconnect = () => {
+      dispatch({ type: 'DISCONNECTED' })
+    }
+    socket.on('disconnect', onDisconnect)
+
     return () => {
       socket.off('lobby-update')
       socket.off('game-started')
@@ -242,6 +258,7 @@ export function GameProvider({ children }) {
       socket.off('vote-result')
       socket.off('final-guess-result')
       socket.off('round_restarted')
+      socket.off('disconnect', onDisconnect)
     }
   }, [])
 
@@ -281,8 +298,12 @@ export function GameProvider({ children }) {
     }, []),
 
     startGame: useCallback(() => {
+      console.log('🔘 Sending start-game event')
       const socket = getSocket()
-      socket.emit('start-game', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+      socket.emit('start-game', (r) => { 
+        console.log('📥 start-game ack:', r)
+        if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) 
+      })
     }, []),
 
     markReady: useCallback(() => {
