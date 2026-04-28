@@ -91,23 +91,35 @@ function gameReducer(state, action) {
         gameState: GAME_STATES.CLUE_ROUND,
         roundData: {
           ...state.roundData,
-          turnOrder: action.turnOrder,
-          currentTurnIdx: action.currentTurnIdx,
-          currentTurnPlayerId: action.currentTurnPlayerId,
+          clueEndTime: action.clueEndTime,
+          submittedCount: action.submittedCount,
+          totalCount: action.totalCount,
+          submittedPlayerIds: action.submittedPlayerIds,
           clues: action.clues,
           clueRoundComplete: action.clueRoundComplete,
         },
         players: action.players || state.players,
       }
 
-    case 'CLUE_ROUND_COMPLETE':
+    case 'CLUE_REVEAL_STARTED':
+      return {
+        ...state,
+        gameState: GAME_STATES.CLUE_REVEAL,
+        roundData: {
+          ...state.roundData,
+          clues: action.clues,
+          clueRoundComplete: true,
+        },
+        players: action.players || state.players,
+      }
+
+    case 'VOTE_STARTED':
       return {
         ...state,
         gameState: GAME_STATES.VOTING,
         roundData: {
           ...state.roundData,
           clues: action.clues,
-          clueRoundComplete: true,
         },
         players: action.players || state.players,
       }
@@ -222,8 +234,12 @@ export function GameProvider({ children }) {
       dispatch({ type: 'CLUE_ROUND_UPDATE', ...data })
     })
 
-    socket.on('clue-round-complete', (data) => {
-      dispatch({ type: 'CLUE_ROUND_COMPLETE', ...data })
+    socket.on('clue-reveal-started', (data) => {
+      dispatch({ type: 'CLUE_REVEAL_STARTED', ...data })
+    })
+
+    socket.on('vote-started', (data) => {
+      dispatch({ type: 'VOTE_STARTED', ...data })
     })
 
     socket.on('vote-update', (data) => {
@@ -253,7 +269,8 @@ export function GameProvider({ children }) {
       socket.off('ready-update')
       socket.off('clue-round-started')
       socket.off('clue-round-update')
-      socket.off('clue-round-complete')
+      socket.off('clue-reveal-started')
+      socket.off('vote-started')
       socket.off('vote-update')
       socket.off('vote-result')
       socket.off('final-guess-result')
@@ -314,6 +331,11 @@ export function GameProvider({ children }) {
     submitClue: useCallback((clue) => {
       const socket = getSocket()
       socket.emit('submit-clue', { clue }, (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
+    }, []),
+
+    continueToVoting: useCallback(() => {
+      const socket = getSocket()
+      socket.emit('continue-to-voting', (r) => { if (r?.error) dispatch({ type: 'SET_ERROR', error: r.error }) })
     }, []),
 
     submitVote: useCallback((targetId) => {

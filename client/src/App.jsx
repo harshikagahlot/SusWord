@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Lobby from './pages/Lobby'
 import Reveal from './pages/Reveal'
 import ClueRound from './pages/ClueRound'
+import ClueReveal from './pages/ClueReveal'
 import Voting from './pages/Voting'
 import Result from './pages/Result'
 
@@ -11,6 +12,7 @@ const screens = {
   LOBBY: Lobby,
   REVEAL: Reveal,
   CLUE_ROUND: ClueRound,
+  CLUE_REVEAL: ClueReveal,
   VOTING: Voting,
   RESULT: Result,
 }
