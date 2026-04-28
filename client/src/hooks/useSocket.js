@@ -1,25 +1,29 @@
 import { io } from 'socket.io-client'
 
-// Use environment variable for deployed backend, fallback to local dev server
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001'
+// Use environment variable, fallback to Railway in production, or localhost in dev
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? 'http://localhost:3001' : 'https://susword-backend-production.up.railway.app')
 
 // Single socket instance shared across the app
 let socket = null
 
 export function getSocket() {
   if (!socket) {
-    console.log('🔌 Initializing socket connection to:', SERVER_URL)
+    console.log(`🔌 Initializing socket connection to EXACT URL: "${SERVER_URL}"`)
     socket = io(SERVER_URL, {
       autoConnect: false,
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
-      transports: ['websocket', 'polling'], // Production-safe transports
+      transports: ['websocket'], // Force WebSocket only
+      upgrade: false,            // Prevent long-polling upgrade issues
     })
     
     // Add temporary global error logging
     socket.on('connect_error', (err) => {
-      console.error('🔌 Socket global connect_error:', err.message, err)
+      console.error(`🔌 Socket global connect_error: [${err.message}]`, err)
+    })
+    socket.on('connect', () => {
+      console.log(`🔌 Socket connect SUCCESS. ID: ${socket.id}`)
     })
   }
   return socket
