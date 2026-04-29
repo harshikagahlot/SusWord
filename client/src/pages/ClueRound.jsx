@@ -1,42 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 
 export default function ClueRound() {
   const { state, actions } = useGame()
-  const { currentPlayerId, roundData } = state
-  const { clueEndTime, submittedCount, totalCount, submittedPlayerIds } = roundData || {}
+  const { players, currentPlayerId, roundData } = state
+  const { turnOrder, currentTurnIdx, currentTurnPlayerId, clues, clueRoundComplete } = roundData || {}
 
   const [clueInput, setClueInput] = useState('')
   const [submitted, setSubmitted] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(30)
 
-  // Countdown timer logic
-  useEffect(() => {
-    if (!clueEndTime) return
-
-    const updateTimer = () => {
-      const now = Date.now()
-      const remaining = Math.max(0, Math.ceil((clueEndTime - now) / 1000))
-      setTimeLeft(remaining)
-    }
-
-    updateTimer()
-    const interval = setInterval(updateTimer, 1000)
-    return () => clearInterval(interval)
-  }, [clueEndTime])
-
-  // Check if current player already submitted (reconnect safety)
-  useEffect(() => {
-    if (submittedPlayerIds?.includes(currentPlayerId)) {
-      setSubmitted(true)
-    }
-  }, [submittedPlayerIds, currentPlayerId])
+  const isMyTurn = currentTurnPlayerId === currentPlayerId
+  const currentTurnPlayer = players.find(p => p.id === currentTurnPlayerId)
 
   const handleSubmit = () => {
     const trimmed = clueInput.trim()
-    if (trimmed && !submitted && timeLeft > 0) {
+    if (trimmed && isMyTurn && !submitted) {
       setSubmitted(true)
       actions.submitClue(trimmed)
+      setClueInput('')
     }
   }
 
@@ -44,41 +25,42 @@ export default function ClueRound() {
     if (e.key === 'Enter') handleSubmit()
   }
 
-  const allSubmitted = submittedCount >= totalCount
+  // Reset submitted when it's my turn (shouldn't normally re-trigger, safety net)
+  if (isMyTurn && submitted) {
+    setSubmitted(false)
+  }
 
   return (
     <div>
       <div className="text-center mb-6">
         <h2 className="text-xs uppercase tracking-widest text-text-muted mb-1">
-          Clue Phase
+          Clue Round
         </h2>
         <p className="text-sm text-text-muted">
-          All players write simultaneously
+          {clueRoundComplete
+            ? 'All clues submitted!'
+            : `Turn ${(currentTurnIdx || 0) + 1} of ${turnOrder?.length || 0}`
+          }
         </p>
       </div>
 
-      {/* Timer and Progress */}
-      <div className="card-elevated text-center mb-6">
-        <div className="flex items-center justify-between px-4">
-          <div className="text-left">
-            <p className="text-xs text-text-muted mb-1">Time Left</p>
-            <p className={`text-2xl font-bold ${timeLeft <= 5 ? 'text-danger animate-pulse' : 'text-text-primary'}`}>
-              00:{timeLeft.toString().padStart(2, '0')}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-text-muted mb-1">Progress</p>
-            <p className="text-lg font-medium text-accent">
-              {submittedCount || 0} / {totalCount || 0}
-            </p>
-          </div>
+      {/* Whose turn it is */}
+      {!clueRoundComplete && currentTurnPlayer && (
+        <div className={`card-elevated text-center mb-5 ${isMyTurn ? 'border-accent/50' : ''}`}>
+          <p className="text-text-muted text-xs mb-1">
+            {isMyTurn ? "It's your turn!" : 'Waiting for...'}
+          </p>
+          <p className={`text-xl font-bold ${isMyTurn ? 'text-accent' : 'text-text-primary'}`}>
+            {currentTurnPlayer.name}
+            {isMyTurn && <span className="text-text-muted text-sm ml-1.5">(you)</span>}
+          </p>
         </div>
-      </div>
+      )}
 
-      {/* Input Section */}
-      {!submitted && !allSubmitted && timeLeft > 0 ? (
-        <div className="mb-5 animate-in fade-in slide-in-from-bottom-2">
-          <div className="flex gap-2 mb-2">
+      {/* Input (only on my turn) */}
+      {isMyTurn && !submitted && (
+        <div className="mb-5">
+          <div className="flex gap-2">
             <input
               id="clue-input"
               type="text"
@@ -87,7 +69,7 @@ export default function ClueRound() {
               value={clueInput}
               onChange={e => setClueInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              maxLength={40}
+              maxLength={60}
               autoFocus
             />
             <button
@@ -99,18 +81,38 @@ export default function ClueRound() {
               Send
             </button>
           </div>
-          <p className="text-text-muted text-xs text-center">
-            Don't use your exact word! If time runs out, you lose your turn.
+          <p className="text-text-muted text-xs mt-1.5 text-center">
+            Don't use your exact word!
           </p>
         </div>
-      ) : (
-        <div className="card-elevated text-center mb-5 border-accent/40 bg-accent/5 animate-in fade-in zoom-in-95">
-          <p className="text-accent font-medium mb-1">
-            {allSubmitted ? "Everyone submitted!" : "Submitted ✓"}
-          </p>
-          <p className="text-sm text-text-muted">
-            {allSubmitted ? "Waiting for reveal..." : "Waiting for other players..."}
-          </p>
+      )}
+
+      {/* After submitting, waiting for others */}
+      {isMyTurn && submitted && (
+        <div className="card-elevated text-center mb-5">
+          <p className="text-accent text-sm animate-pulse">Submitted! Waiting for next player...</p>
+        </div>
+      )}
+
+      {/* Clues collected so far */}
+      {clues && clues.length > 0 && (
+        <div className="mb-5">
+          <p className="text-text-muted text-xs uppercase tracking-widest mb-2">Clues so far</p>
+          <div className="flex flex-col gap-2">
+            {clues.map((c, i) => (
+              <div key={i} className="card py-2.5 px-4">
+                <p className="text-xs text-text-muted mb-0.5">{c.playerName}</p>
+                <p className="text-sm font-medium">"{c.clue}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Auto-transition message */}
+      {clueRoundComplete && (
+        <div className="text-center text-text-muted text-sm animate-pulse">
+          Moving to voting...
         </div>
       )}
     </div>

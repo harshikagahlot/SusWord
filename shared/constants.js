@@ -4,8 +4,7 @@ export const GAME_STATES = {
   HOME: 'HOME',           // Initial screen (Create/Join)
   LOBBY: 'LOBBY',         // Waiting for players
   REVEAL: 'REVEAL',       // Showing secret words/roles
-  CLUE_ROUND: 'CLUE_ROUND', // Players giving clues (simultaneous)
-  CLUE_REVEAL: 'CLUE_REVEAL', // Showing all clues together
+  CLUE_ROUND: 'CLUE_ROUND', // Players giving clues (turn-based)
   VOTING: 'VOTING',       // Selecting the imposter
   RESULT: 'RESULT',       // Final outcome reveal
 };

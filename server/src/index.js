@@ -3,7 +3,7 @@ const http = require('http')
 const { Server } = require('socket.io')
 const cors = require('cors')
 const { createRoom, joinRoom, leaveRoom, getRoom, getRoomBySocketId } = require('./roomManager')
-const { startRound, getPlayerRevealData, setPlayerReady, submitClue, forceCompleteClueRound, getClueRoundState, handleClueDisconnect, submitVote, resolveVotes, submitFinalGuess } = require('./gameManager')
+const { startRound, getPlayerRevealData, setPlayerReady, submitClue, getClueRoundState, handleClueDisconnect, submitVote, resolveVotes, submitFinalGuess } = require('./gameManager')
 
 const PORT = process.env.PORT || 3001
 
@@ -136,23 +136,9 @@ io.on('connection', (socket) => {
     // All ready → start clue round
     if (result.allReady) {
       room.gameState = 'CLUE_ROUND'
-      
-      const CLUE_TIMER_MS = 30000;
-      room.roundData.clueEndTime = Date.now() + CLUE_TIMER_MS;
-      
       const clueState = getClueRoundState(room)
       io.to(room.roomCode).emit('clue-round-started', clueState)
-      console.log(`📝 Clue round started in ${room.roomCode} (Simultaneous, 30s timer)`)
-
-      // Set backend timer to forcefully complete the phase
-      room.roundData.clueTimer = setTimeout(() => {
-        const r = getRoom(room.roomCode);
-        if (r && r.gameState === 'CLUE_ROUND' && r.roundData && !r.roundData.clueRoundComplete) {
-          forceCompleteClueRound(r);
-          io.to(r.roomCode).emit('clue-reveal-started', getClueRoundState(r));
-          console.log(`⏰ Clue timer expired in ${r.roomCode} — forcing CLUE_REVEAL`);
-        }
-      }, CLUE_TIMER_MS);
+      console.log(`📝 Clue round started in ${room.roomCode}`)
     }
   })
 
@@ -173,35 +159,19 @@ io.on('connection', (socket) => {
     const clueState = getClueRoundState(room)
     io.to(room.roomCode).emit('clue-round-update', clueState)
 
-    // If clue round complete (all submitted early), transition to reveal
+    // If clue round complete, notify transition to voting
     if (result.clueRoundComplete) {
-      clearTimeout(room.roundData.clueTimer);
-      console.log(`🕵️ All clues submitted early in ${room.roomCode} — moving to CLUE_REVEAL`)
-      io.to(room.roomCode).emit('clue-reveal-started', clueState)
+      console.log(`🗳️  Clue round complete in ${room.roomCode} — moving to VOTING`)
+      io.to(room.roomCode).emit('clue-round-complete', {
+        gameState: 'VOTING',
+        clues: room.roundData.clues,
+        players: room.players.map(p => ({
+          id: p.id,
+          name: p.name,
+          isHost: p.id === room.hostId,
+        })),
+      })
     }
-  })
-
-  // ── Continue to Voting (From Clue Reveal) ────────────────
-  socket.on('continue-to-voting', (callback) => {
-    const room = getRoomBySocketId(socket.id);
-    if (!room) return callback?.({ error: 'Room not found' });
-    if (room.hostId !== socket.id) return callback?.({ error: 'Only the host can continue' });
-    if (room.gameState !== 'CLUE_REVEAL') return callback?.({ error: 'Not in clue reveal phase' });
-
-    room.gameState = 'VOTING';
-    console.log(`🗳️  Moving to VOTING in ${room.roomCode}`);
-    
-    io.to(room.roomCode).emit('vote-started', {
-      gameState: 'VOTING',
-      clues: room.roundData.clues,
-      players: room.players.map(p => ({
-        id: p.id,
-        name: p.name,
-        isHost: p.id === room.hostId,
-      })),
-    });
-    
-    callback?.({ success: true });
   })
 
   // ── Submit Vote ──────────────────────────────────────────
