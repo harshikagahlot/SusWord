@@ -6,7 +6,7 @@ export default function ClueReveal() {
   const { clues } = roundData || {}
 
   const currentPlayer = players.find(p => p.id === currentPlayerId)
-  const isHost = currentPlayer?.isHost
+  const isHost = currentPlayer?.isHost || players.find(p => p.isHost)?.id === currentPlayerId
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500">

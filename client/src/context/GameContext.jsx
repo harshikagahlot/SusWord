@@ -163,19 +163,6 @@ function gameReducer(state, action) {
         },
       }
 
-    case 'GAME_STARTED':
-      return {
-        ...state,
-        gameState: GAME_STATES.REVEAL,
-        myWord: action.word,
-        players: action.players || state.players,
-        readyCount: 0,
-        totalCount: action.players?.length || state.players.length,
-        readyPlayerIds: [],
-        roundData: null,
-        error: null,
-      }
-
     case 'ROUND_RESTARTED':
       return {
         ...state,
