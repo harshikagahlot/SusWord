@@ -32,7 +32,7 @@ export default function Result() {
   const handleRestart = () => {
     console.log('🔄 Requesting restart...')
     setIsRestarting(true)
-    
+
     actions.restartRound((response) => {
       if (response?.error) {
         console.error('❌ Restart failed:', response.error)
@@ -42,7 +42,6 @@ export default function Result() {
       }
     })
 
-    // Safety timeout to reset button if server hangs
     setTimeout(() => {
       setIsRestarting(prev => {
         if (prev) console.warn('⚠️ Restart timed out')
@@ -53,13 +52,19 @@ export default function Result() {
 
   const winnerLabel = winner === 'IMPOSTER' ? '🕵️ Imposter Wins!' : '🎉 Civilians Win!'
   const winnerColor = winner === 'IMPOSTER' ? 'text-danger' : 'text-accent'
+  const winnerGlow = winner === 'IMPOSTER'
+    ? '0 0 24px rgba(244,63,94,0.35)'
+    : '0 0 24px rgba(163,230,53,0.35)'
 
   return (
     <div>
       {/* Winner announcement */}
       {winner && (
         <div className="text-center mb-6">
-          <p className={`text-3xl font-extrabold ${winnerColor} mb-2`}>
+          <p
+            className={`text-3xl font-extrabold ${winnerColor} mb-2`}
+            style={{ textShadow: winnerGlow }}
+          >
             {winnerLabel}
           </p>
         </div>
@@ -67,12 +72,14 @@ export default function Result() {
 
       {/* Final guess (imposter caught, awaiting guess) */}
       {showFinalGuessInput && (
-        <div className="card-elevated text-center mb-6 border-danger/40">
+        <div className="card-elevated text-center mb-6 border-danger/40"
+             style={{ boxShadow: '0 0 0 1px rgba(244,63,94,0.2), 0 4px 20px rgba(0,0,0,0.35)' }}>
           <p className="text-danger font-bold text-lg mb-1">You were caught!</p>
           <p className="text-text-muted text-sm mb-4">
             Guess the main word to steal the win.
           </p>
-          <div className="flex gap-2 mb-2">
+          {/* Stack vertically on mobile, side by side on wider */}
+          <div className="flex flex-col sm:flex-row gap-2 mb-2">
             <input
               id="final-guess-input"
               type="text"
@@ -85,7 +92,7 @@ export default function Result() {
             />
             <button
               id="submit-guess-btn"
-              className="btn btn-primary !w-auto px-5"
+              className="btn btn-primary sm:!w-auto sm:px-5"
               disabled={!guessInput.trim()}
               onClick={handleGuess}
             >
@@ -131,11 +138,13 @@ export default function Result() {
 
           {/* Words reveal */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="card text-center">
+            <div className="card text-center"
+                 style={{ boxShadow: '0 0 12px rgba(163,230,53,0.08)' }}>
               <p className="text-text-muted text-xs mb-1">Main Word</p>
               <p className="text-lg font-bold text-accent">{wordPair?.mainWord}</p>
             </div>
-            <div className="card text-center">
+            <div className="card text-center"
+                 style={{ boxShadow: '0 0 12px rgba(244,63,94,0.08)' }}>
               <p className="text-text-muted text-xs mb-1">Imposter Word</p>
               <p className="text-lg font-bold text-danger">{wordPair?.imposterWord}</p>
             </div>
@@ -146,19 +155,19 @@ export default function Result() {
             <p className="text-text-muted text-xs uppercase tracking-widest mb-2">
               All Players
             </p>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               {players.map(player => {
                 const votesReceived = voteTally?.[player.id] || 0
                 const isImposter = player.id === imposterId || player.isImposter
                 return (
                   <div
                     key={player.id}
-                    className={`card py-2.5 px-4 flex items-center justify-between ${
+                    className={`card tap-row py-3 px-4 flex items-center justify-between ${
                       isImposter ? 'border-danger/30' : ''
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                         isImposter ? 'bg-danger/20 text-danger' : 'bg-accent/15 text-accent'
                       }`}>
                         {player.name[0]}

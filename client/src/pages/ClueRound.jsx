@@ -46,7 +46,12 @@ export default function ClueRound() {
 
       {/* Whose turn it is */}
       {!clueRoundComplete && currentTurnPlayer && (
-        <div className={`card-elevated text-center mb-5 ${isMyTurn ? 'border-accent/50' : ''}`}>
+        <div className={`card-elevated text-center mb-5 ${
+          isMyTurn
+            ? 'border-accent/50'
+            : ''
+        }`}
+          style={isMyTurn ? { boxShadow: '0 0 0 2px rgba(163,230,53,0.2), 0 4px 20px rgba(0,0,0,0.35)' } : {}}>
           <p className="text-text-muted text-xs mb-1">
             {isMyTurn ? "It's your turn!" : 'Waiting for...'}
           </p>
@@ -60,7 +65,7 @@ export default function ClueRound() {
       {/* Input (only on my turn) */}
       {isMyTurn && !submitted && (
         <div className="mb-5">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-stretch">
             <input
               id="clue-input"
               type="text"
@@ -74,14 +79,14 @@ export default function ClueRound() {
             />
             <button
               id="submit-clue-btn"
-              className="btn btn-primary !w-auto px-5"
+              className="btn btn-primary !w-auto px-5 flex-shrink-0"
               disabled={!clueInput.trim()}
               onClick={handleSubmit}
             >
               Send
             </button>
           </div>
-          <p className="text-text-muted text-xs mt-1.5 text-center">
+          <p className="text-text-muted text-xs mt-2 text-center">
             Don't use your exact word!
           </p>
         </div>
@@ -100,7 +105,7 @@ export default function ClueRound() {
           <p className="text-text-muted text-xs uppercase tracking-widest mb-2">Clues so far</p>
           <div className="flex flex-col gap-2">
             {clues.map((c, i) => (
-              <div key={i} className="card py-2.5 px-4">
+              <div key={i} className="card tap-row py-3 px-4">
                 <p className="text-xs text-text-muted mb-0.5">{c.playerName}</p>
                 <p className="text-sm font-medium">"{c.clue}"</p>
               </div>
@@ -111,7 +116,7 @@ export default function ClueRound() {
 
       {/* Auto-transition message */}
       {clueRoundComplete && (
-        <div className="text-center text-text-muted text-sm animate-pulse">
+        <div className="text-center text-text-muted text-sm animate-pulse py-2">
           Moving to voting...
         </div>
       )}

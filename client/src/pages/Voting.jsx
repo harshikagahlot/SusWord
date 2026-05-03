@@ -33,7 +33,7 @@ export default function Voting() {
       </div>
 
       {/* Player grid */}
-      <div className="flex flex-col gap-2 mb-6">
+      <div className="flex flex-col gap-3 mb-6">
         {otherPlayers.map(player => {
           const isSelected = selectedId === player.id
           return (
@@ -42,20 +42,20 @@ export default function Voting() {
               id={`vote-player-${player.id}`}
               disabled={hasVoted}
               onClick={() => !hasVoted && setSelectedId(player.id)}
-              className={`card flex items-center gap-3 py-3 px-4 text-left transition-all cursor-pointer ${
+              className={`card tap-row flex items-center gap-3 py-4 px-4 text-left transition-all ${
                 isSelected
-                  ? 'border-danger bg-danger/5'
+                  ? 'border-danger bg-danger/5 shadow-[0_0_0_2px_rgba(244,63,94,0.35)]'
                   : 'hover:border-text-muted/30'
-              } ${hasVoted ? 'opacity-60 cursor-not-allowed' : ''}`}
+              } ${hasVoted ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-all duration-150 ${
                 isSelected
-                  ? 'bg-danger/20 text-danger'
+                  ? 'bg-danger/20 text-danger scale-110'
                   : 'bg-surface-light text-text-muted'
               }`}>
                 {player.name[0].toUpperCase()}
               </div>
-              <span className="font-medium flex-1">{player.name}</span>
+              <span className="font-medium flex-1 text-left">{player.name}</span>
               {isSelected && (
                 <span className="badge badge-danger">SUS</span>
               )}
@@ -74,6 +74,7 @@ export default function Voting() {
           style={selectedId ? {
             backgroundColor: 'var(--color-danger)',
             color: 'white',
+            boxShadow: '0 4px 16px rgba(244,63,94,0.3)',
           } : {}}
         >
           {selectedId
@@ -85,7 +86,7 @@ export default function Voting() {
 
       {/* Waiting indicator */}
       {hasVoted && (
-        <div className="text-center text-text-muted text-sm animate-pulse">
+        <div className="text-center text-text-muted text-sm animate-pulse py-2">
           Counting votes... {votedCount} / {totalCount}
         </div>
       )}

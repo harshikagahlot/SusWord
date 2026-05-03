@@ -23,10 +23,10 @@ export default function ClueReveal() {
       <div className="flex flex-col gap-3 mb-8">
         {clues && clues.length > 0 ? (
           clues.map((c, i) => (
-            <div 
-              key={i} 
-              className="card py-4 px-5 border-l-4 border-l-danger/70 bg-surface-light/50 hover:bg-surface-light hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-danger/10 group"
-              style={{ animationDelay: `${i * 100}ms` }}
+            <div
+              key={i}
+              className="card tap-row py-4 px-5 border-l-4 border-l-danger/70 bg-surface-light/50 group"
+              style={{ animationDelay: `${i * 100}ms`, transition: 'transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease' }}
             >
               <p className="text-xs text-danger uppercase tracking-widest font-bold mb-1 opacity-70 group-hover:opacity-100 transition-opacity">
                 {c.playerName}
@@ -45,7 +45,8 @@ export default function ClueReveal() {
       <div className="flex flex-col items-center gap-3">
         {isHost ? (
           <button
-            className="btn bg-danger hover:bg-danger/90 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all w-full"
+            className="btn bg-danger text-white w-full"
+            style={{ boxShadow: '0 0 15px rgba(239,68,68,0.3)' }}
             onClick={actions.continueToVoting}
           >
             ▶ Continue to Voting

@@ -22,7 +22,7 @@ export default function App() {
   const Screen = screens[state.gameState] || Home
 
   return (
-    <div className="w-full min-h-screen p-4 flex flex-col items-center justify-center">
+    <div className="w-full min-h-screen px-4 py-6 flex flex-col items-center justify-center" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
       {state.error && (
         <div className="w-full max-w-md mx-auto mb-4 card border-danger/40 text-danger text-sm py-2.5 px-4 animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center justify-between">
