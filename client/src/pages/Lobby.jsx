@@ -119,7 +119,7 @@ export default function Lobby() {
               <div
                 key={player.id}
                 id={`lobby-player-${player.id}`}
-                className="flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-150"
+                className="player-card flex items-center gap-3"
                 style={{
                   background: isMe
                     ? 'linear-gradient(135deg, rgba(163,230,53,0.08), rgba(163,230,53,0.02))'

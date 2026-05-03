@@ -152,46 +152,113 @@ export default function Result() {
 
           {/* All players */}
           <div className="mb-4">
-            <p className="text-text-muted text-xs uppercase tracking-widest mb-2">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted font-semibold mb-3 px-1">
               All Players
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2.5">
               {players.map(player => {
                 const votesReceived = voteTally?.[player.id] || 0
                 const isImposter = player.id === imposterId || player.isImposter
+                const isMe = player.id === currentPlayerId
+                const isVotedOut = player.id === votedOutId
+
                 return (
                   <div
                     key={player.id}
-                    className={`card tap-row py-3 px-4 flex items-center justify-between ${
-                      isImposter ? 'border-danger/30' : ''
-                    }`}
+                    className="player-card flex items-center gap-3.5"
+                    style={
+                      isImposter
+                        ? {
+                            background: 'linear-gradient(135deg, rgba(244,63,94,0.1), rgba(244,63,94,0.03))',
+                            border: '1.5px solid rgba(244,63,94,0.3)',
+                            boxShadow: '0 0 18px rgba(244,63,94,0.08), 0 3px 12px rgba(0,0,0,0.25)',
+                          }
+                        : isMe
+                          ? {
+                              background: 'linear-gradient(135deg, rgba(163,230,53,0.07), rgba(163,230,53,0.02))',
+                              border: '1.5px solid rgba(163,230,53,0.2)',
+                              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+                            }
+                          : {
+                              background: 'rgba(31,41,55,0.7)',
+                              border: '1px solid rgba(55,65,81,0.7)',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+                            }
+                    }
                   >
-                    <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                        isImposter ? 'bg-danger/20 text-danger' : 'bg-accent/15 text-accent'
-                      }`}>
-                        {player.name[0]}
-                      </div>
-                      <span className="text-sm font-medium">
-                        {player.name}
-                        {player.id === currentPlayerId && (
-                          <span className="text-text-muted text-xs ml-1">(you)</span>
-                        )}
-                      </span>
+                    {/* Avatar */}
+                    <div
+                      className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0"
+                      style={
+                        isImposter
+                          ? {
+                              background: 'linear-gradient(135deg, rgba(244,63,94,0.3), rgba(244,63,94,0.1))',
+                              color: 'var(--color-danger)',
+                              border: '1.5px solid rgba(244,63,94,0.4)',
+                              boxShadow: '0 0 12px rgba(244,63,94,0.2)',
+                            }
+                          : {
+                              background: 'rgba(51,65,85,0.9)',
+                              color: 'var(--color-text-muted)',
+                              border: '1px solid rgba(71,85,105,0.5)',
+                            }
+                      }
+                    >
+                      {isImposter ? '🕵️' : player.name[0]}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-text-muted text-xs">
-                        {votesReceived} vote{votesReceived !== 1 ? 's' : ''}
-                      </span>
-                      <span className={`badge ${isImposter ? 'badge-danger' : 'badge-accent'}`}>
+
+                    {/* Name + label */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-bold text-sm truncate ${isImposter ? 'text-danger' : 'text-text-primary'}`}>
+                        {player.name}
+                        {isMe && (
+                          <span className="ml-1.5 text-[10px] font-normal text-text-muted">(you)</span>
+                        )}
+                      </p>
+                      <p className="text-[10px] text-text-muted mt-0.5">
+                        {isImposter ? 'The Imposter' : isVotedOut ? 'Voted Out' : 'Civilian'}
+                      </p>
+                    </div>
+
+                    {/* Right side: votes + badge */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {votesReceived > 0 && (
+                        <div
+                          className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                          style={{
+                            background: isImposter ? 'rgba(244,63,94,0.15)' : 'rgba(255,255,255,0.06)',
+                            color: isImposter ? 'var(--color-danger)' : 'var(--color-text-muted)',
+                            border: isImposter ? '1px solid rgba(244,63,94,0.2)' : '1px solid rgba(255,255,255,0.08)',
+                          }}
+                        >
+                          {votesReceived}🗳
+                        </div>
+                      )}
+                      <div
+                        className="px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-widest"
+                        style={
+                          isImposter
+                            ? {
+                                background: 'linear-gradient(135deg, rgba(244,63,94,0.2), rgba(244,63,94,0.05))',
+                                color: 'var(--color-danger)',
+                                border: '1px solid rgba(244,63,94,0.3)',
+                              }
+                            : {
+                                background: 'linear-gradient(135deg, rgba(163,230,53,0.15), rgba(163,230,53,0.04))',
+                                color: 'var(--color-accent)',
+                                border: '1px solid rgba(163,230,53,0.22)',
+                              }
+                        }
+                      >
                         {isImposter ? 'SPY' : 'SAFE'}
-                      </span>
+                      </div>
                     </div>
                   </div>
                 )
               })}
             </div>
           </div>
+
 
           {/* Actions */}
           <div className="flex flex-col gap-3 mt-6">
