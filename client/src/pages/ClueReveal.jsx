@@ -25,15 +25,33 @@ export default function ClueReveal() {
           clues.map((c, i) => (
             <div
               key={i}
-              className="card tap-row py-4 px-5 border-l-4 border-l-danger/70 bg-surface-light/50 group"
-              style={{ animationDelay: `${i * 100}ms`, transition: 'transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease' }}
+              className="player-card flex items-center gap-3.5 group"
+              style={{
+                animationDelay: `${i * 100}ms`,
+                background: 'linear-gradient(135deg, rgba(244,63,94,0.08), rgba(244,63,94,0.02))',
+                border: '1px solid rgba(244,63,94,0.2)',
+                borderLeft: '4px solid rgba(244,63,94,0.7)',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+              }}
             >
-              <p className="text-xs text-danger uppercase tracking-widest font-bold mb-1 opacity-70 group-hover:opacity-100 transition-opacity">
-                {c.playerName}
-              </p>
-              <p className="text-lg font-medium text-text-primary">
-                {c.clue ? `"${c.clue}"` : <span className="text-text-muted italic">[No clue submitted]</span>}
-              </p>
+              {/* Avatar */}
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0"
+                style={{
+                  background: 'rgba(244,63,94,0.15)',
+                  color: 'var(--color-danger)',
+                }}
+              >
+                {c.playerName[0].toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] text-danger uppercase tracking-widest font-bold mb-0.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                  {c.playerName}
+                </p>
+                <p className="text-[15px] font-semibold text-text-primary truncate">
+                  {c.clue ? `"${c.clue}"` : <span className="text-text-muted italic">[No clue submitted]</span>}
+                </p>
+              </div>
             </div>
           ))
         ) : (

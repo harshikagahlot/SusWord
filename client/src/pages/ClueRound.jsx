@@ -46,18 +46,27 @@ export default function ClueRound() {
 
       {/* Whose turn it is */}
       {!clueRoundComplete && currentTurnPlayer && (
-        <div className={`card-elevated text-center mb-5 ${
-          isMyTurn
-            ? 'border-accent/50'
-            : ''
-        }`}
-          style={isMyTurn ? { boxShadow: '0 0 0 2px rgba(163,230,53,0.2), 0 4px 20px rgba(0,0,0,0.35)' } : {}}>
-          <p className="text-text-muted text-xs mb-1">
-            {isMyTurn ? "It's your turn!" : 'Waiting for...'}
+        <div className="player-card text-center mb-5"
+          style={
+            isMyTurn
+              ? {
+                  background: 'linear-gradient(135deg, rgba(163,230,53,0.1), rgba(163,230,53,0.02))',
+                  border: '1.5px solid rgba(163,230,53,0.3)',
+                  boxShadow: '0 0 20px rgba(163,230,53,0.12), 0 4px 16px rgba(0,0,0,0.3)',
+                }
+              : {
+                  background: 'rgba(31,41,55,0.6)',
+                  border: '1px solid rgba(55,65,81,0.6)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                }
+          }
+        >
+          <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted mb-1.5 font-bold">
+            {isMyTurn ? "✦ It's your turn!" : 'Waiting for...'}
           </p>
-          <p className={`text-xl font-bold ${isMyTurn ? 'text-accent' : 'text-text-primary'}`}>
+          <p className={`text-2xl font-black ${isMyTurn ? 'text-accent' : 'text-text-primary'}`}>
             {currentTurnPlayer.name}
-            {isMyTurn && <span className="text-text-muted text-sm ml-1.5">(you)</span>}
+            {isMyTurn && <span className="text-text-muted text-sm ml-1.5 font-medium">(you)</span>}
           </p>
         </div>
       )}
@@ -102,14 +111,41 @@ export default function ClueRound() {
       {/* Clues collected so far */}
       {clues && clues.length > 0 && (
         <div className="mb-5">
-          <p className="text-text-muted text-xs uppercase tracking-widest mb-2">Clues so far</p>
-          <div className="flex flex-col gap-2">
-            {clues.map((c, i) => (
-              <div key={i} className="card tap-row py-3 px-4">
-                <p className="text-xs text-text-muted mb-0.5">{c.playerName}</p>
-                <p className="text-sm font-medium">"{c.clue}"</p>
-              </div>
-            ))}
+          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted font-semibold mb-3 px-1">
+            Clues so far
+          </p>
+          <div className="flex flex-col gap-2.5">
+            {clues.map((c, i) => {
+              const isMyClue = c.playerName === currentTurnPlayer?.name && isMyTurn; // Just for visual feedback if we wanted
+              return (
+                <div key={i} className="player-card flex items-center gap-3.5"
+                  style={{
+                    background: 'rgba(31,41,55,0.7)',
+                    border: '1px solid rgba(55,65,81,0.7)',
+                    borderLeft: '4px solid rgba(163,230,53,0.5)',
+                  }}
+                >
+                  {/* Avatar */}
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0"
+                    style={{
+                      background: 'rgba(51,65,85,0.9)',
+                      color: 'var(--color-text-muted)',
+                    }}
+                  >
+                    {c.playerName[0].toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] text-accent/80 font-bold uppercase tracking-widest mb-0.5">
+                      {c.playerName}
+                    </p>
+                    <p className="text-[15px] font-semibold text-text-primary truncate">
+                      "{c.clue}"
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
