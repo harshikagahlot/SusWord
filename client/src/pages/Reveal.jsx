@@ -135,7 +135,7 @@ export default function Reveal() {
             )}
 
             {/* Task 4: Personal & Global Text (No Color Bias) */}
-            <div className="mt-6 flex flex-col items-center opacity-0 animate-[fade-in_0.5s_ease-out_forwards]" style={{ animationDelay: '600ms' }}>
+            <div className="mt-6 flex flex-col items-center w-full">
               <p className="text-[13px] font-bold text-white tracking-wide text-center mb-1">
                 {isImposter ? "You are the Imposter" : "You have the Word"}
               </p>
