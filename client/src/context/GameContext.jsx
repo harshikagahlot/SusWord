@@ -219,7 +219,10 @@ export function GameProvider({ children }) {
     })
 
     socket.on('vote-result', (data) => {
-      dispatch({ type: 'VOTE_RESULT', ...data })
+      // 300ms delay to allow Voting screen transition (dim/blur) to play
+      setTimeout(() => {
+        dispatch({ type: 'VOTE_RESULT', ...data })
+      }, 300)
     })
 
     socket.on('final-guess-result', (data) => {

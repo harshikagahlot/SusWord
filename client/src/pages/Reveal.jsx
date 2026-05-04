@@ -8,6 +8,14 @@ export default function Reveal() {
   const { myWord, isImposter, readyCount, totalCount, readyPlayerIds } = state
   const [revealStage, setRevealStage] = useState('locked') // 'locked' | 'anticipating' | 'revealed'
   const [isReady, setIsReady] = useState(false)
+  const [suspenseIndex, setSuspenseIndex] = useState(0)
+
+  const suspenseMessages = [
+    "One of you is lying 👀",
+    "Think before you speak...",
+    "Trust no one",
+    "Not everyone knows the word"
+  ]
 
   const key = myWord?.toLowerCase().trim();
   const wordData = WORD_DICTIONARY[key];
@@ -32,6 +40,16 @@ export default function Reveal() {
       actions.markReady()
     }
   }
+
+  // Rotate suspense messages
+  useEffect(() => {
+    if (revealStage === 'revealed') {
+      const interval = setInterval(() => {
+        setSuspenseIndex((prev) => (prev + 1) % suspenseMessages.length)
+      }, 3000)
+      return () => clearInterval(interval)
+    }
+  }, [revealStage, suspenseMessages.length])
 
   return (
     <div className="text-center min-h-screen flex flex-col items-center justify-center px-4 overflow-y-auto w-full gap-6">
@@ -116,6 +134,22 @@ export default function Reveal() {
           </div>
         )}
       </button>
+
+      {/* Suspense Messages */}
+      {revealStage === 'revealed' && (
+        <div className="h-6 relative w-full flex justify-center mt-2 opacity-0 animate-[fade-in_1s_ease-out_forwards]" style={{ animationDelay: '1000ms' }}>
+          {suspenseMessages.map((msg, idx) => (
+            <p
+              key={idx}
+              className={`absolute text-sm text-slate-500 font-medium tracking-wide transition-opacity duration-1000 ${
+                suspenseIndex === idx ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              {msg}
+            </p>
+          ))}
+        </div>
+      )}
 
       {/* Ready button (only after card flip) */}
       {revealStage === 'revealed' && !isReady && (
