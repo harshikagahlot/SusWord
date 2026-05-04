@@ -1,17 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGame } from '../context/GameContext'
 import Card3D from '../components/Card3D'
 
 export default function ClueRound() {
   const { state, actions } = useGame()
-  const { players, currentPlayerId, roundData } = state
+  const { players, currentPlayerId, roundData, isImposter } = state
   const { turnOrder, currentTurnIdx, currentTurnPlayerId, clues, clueRoundComplete } = roundData || {}
 
   const [clueInput, setClueInput] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [placeholderIdx, setPlaceholderIdx] = useState(0)
+  const [suspenseIdx, setSuspenseIdx] = useState(0)
 
   const isMyTurn = currentTurnPlayerId === currentPlayerId
   const currentTurnPlayer = players.find(p => p.id === currentTurnPlayerId)
+
+  const placeholders = [
+    "Type your clue...",
+    "Be subtle...",
+    "Don't expose yourself..."
+  ]
+
+  const suspenseTexts = [
+    "Analyzing clues...",
+    "Is someone lying?",
+    "Pay close attention...",
+    "Trust your instincts..."
+  ]
+
+  useEffect(() => {
+    if (isMyTurn && !submitted) {
+      const interval = setInterval(() => {
+        setPlaceholderIdx(p => (p + 1) % placeholders.length)
+      }, 3000)
+      return () => clearInterval(interval)
+    }
+  }, [isMyTurn, submitted])
+
+  useEffect(() => {
+    if (!isMyTurn || submitted) {
+      const interval = setInterval(() => {
+        setSuspenseIdx(s => (s + 1) % suspenseTexts.length)
+      }, 3000)
+      return () => clearInterval(interval)
+    }
+  }, [isMyTurn, submitted])
 
   const handleSubmit = () => {
     const trimmed = clueInput.trim()
@@ -32,17 +65,16 @@ export default function ClueRound() {
   }
 
   return (
-    <div>
-      <div className="text-center mb-6">
+    <div className="flex flex-col gap-2 pb-6">
+      <div className="text-center mb-4">
         <h2 className="text-xs uppercase tracking-widest text-text-muted mb-1">
-          Clue Round
+          Clue Phase
         </h2>
-        <p className="text-sm text-text-muted">
-          {clueRoundComplete
-            ? 'All clues submitted!'
-            : `Turn ${(currentTurnIdx || 0) + 1} of ${turnOrder?.length || 0}`
-          }
-        </p>
+        {!clueRoundComplete && (
+          <p className={`text-[13px] font-bold tracking-wide mt-2 ${isImposter ? 'text-danger/90' : 'text-accent/90'}`}>
+            {isImposter ? "Fake it. You don't know the word" : "Give a clue without revealing too much"}
+          </p>
+        )}
       </div>
 
       {/* Whose turn it is */}
@@ -73,39 +105,60 @@ export default function ClueRound() {
       )}
 
       {/* Input (only on my turn) */}
-      {isMyTurn && !submitted && (
-        <div className="mb-5">
+      {isMyTurn && (
+        <div className="mb-6 relative">
           <div className="flex gap-2 items-stretch">
             <input
               id="clue-input"
               type="text"
-              className="input flex-1"
-              placeholder="Type your clue..."
+              className={`input flex-1 transition-all duration-300 focus:shadow-[0_0_20px_rgba(163,230,53,0.15)] focus:scale-[1.02] ${
+                submitted ? 'opacity-50 bg-surface/50 border-slate-700/50 cursor-not-allowed scale-[0.98]' : ''
+              }`}
+              placeholder={placeholders[placeholderIdx]}
               value={clueInput}
               onChange={e => setClueInput(e.target.value)}
               onKeyDown={handleKeyDown}
               maxLength={60}
               autoFocus
+              disabled={submitted}
             />
             <button
               id="submit-clue-btn"
-              className="btn btn-primary !w-auto px-5 flex-shrink-0"
-              disabled={!clueInput.trim()}
+              className={`btn !w-auto px-5 flex-shrink-0 transition-all duration-300 ${
+                submitted 
+                  ? 'bg-slate-700 text-slate-400 border border-slate-600 opacity-80 cursor-not-allowed scale-[0.98]' 
+                  : 'btn-primary active:scale-[0.94]'
+              }`}
+              disabled={!clueInput.trim() || submitted}
               onClick={handleSubmit}
             >
-              Send
+              {submitted ? 'Submitted ✓' : 'Send'}
             </button>
           </div>
-          <p className="text-text-muted text-xs mt-2 text-center">
-            Don't use your exact word!
-          </p>
+          {!submitted && (
+            <p className="text-text-muted text-[11px] mt-2.5 text-center tracking-wide uppercase font-semibold opacity-70">
+              Don't use your exact word!
+            </p>
+          )}
         </div>
       )}
 
-      {/* After submitting, waiting for others */}
-      {isMyTurn && submitted && (
-        <div className="card-elevated text-center mb-5">
-          <p className="text-accent text-sm animate-pulse">Submitted! Waiting for next player...</p>
+      {/* Waiting state and Progress */}
+      {(!isMyTurn || submitted) && !clueRoundComplete && (
+        <div className="flex flex-col items-center justify-center gap-3 mb-6 mt-1 opacity-0 animate-[fade-in_0.5s_ease-out_forwards]">
+          <div className="flex gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-accent/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-1.5 h-1.5 rounded-full bg-accent/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-1.5 h-1.5 rounded-full bg-accent/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+          <div className="h-4 relative w-full flex justify-center overflow-hidden">
+            <p className="absolute text-[11px] uppercase tracking-[0.15em] text-slate-400 font-bold transition-opacity duration-500 text-center">
+              {suspenseTexts[suspenseIdx]}
+            </p>
+          </div>
+          <div className="mt-1 px-3.5 py-1.5 rounded-full border border-slate-700/50 bg-slate-800/40 text-[10px] uppercase tracking-[0.15em] text-slate-300 font-bold shadow-inner">
+            {clues?.length || 0} / {turnOrder?.length || 0} submitted
+          </div>
         </div>
       )}
 
