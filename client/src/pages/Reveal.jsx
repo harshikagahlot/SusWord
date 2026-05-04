@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGame } from '../context/GameContext'
 
 import { WORD_DICTIONARY } from '../wordDictionary'
