@@ -1,12 +1,32 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
-import Card3D from '../components/Card3D'
+
+const WORD_DICTIONARY = {
+  "apple": { emoji: "🍎", meaning: "A sweet red or green fruit" },
+  "banana": { emoji: "🍌", meaning: "A long curved yellow fruit" },
+  "pizza": { emoji: "🍕", meaning: "A flat round dough baked with cheese" },
+  "cat": { emoji: "🐱", meaning: "A small domesticated feline" },
+  "dog": { emoji: "🐶", meaning: "A domesticated canine" },
+  "car": { emoji: "🚗", meaning: "A four-wheeled road vehicle" },
+  "hospital": { emoji: "🏥", meaning: "An institution providing medical treatment" },
+  "school": { emoji: "🏫", meaning: "An institution for educating students" },
+  "teacher": { emoji: "👨‍🏫", meaning: "A person who teaches in a school" },
+  "doctor": { emoji: "👨‍⚕️", meaning: "A qualified practitioner of medicine" },
+  "ocean": { emoji: "🌊", meaning: "A very large expanse of sea" },
+  "mountain": { emoji: "⛰️", meaning: "A large natural elevation of the earth" },
+  "computer": { emoji: "💻", meaning: "An electronic device for processing data" },
+  "phone": { emoji: "📱", meaning: "A portable communication device" },
+  "sun": { emoji: "☀️", meaning: "The star around which the earth orbits" },
+  "moon": { emoji: "🌙", meaning: "The natural satellite of the earth" },
+}
 
 export default function Reveal() {
   const { state, actions } = useGame()
   const { myWord, readyCount, totalCount, readyPlayerIds } = state
   const [isFlipped, setIsFlipped] = useState(false)
   const [isReady, setIsReady] = useState(false)
+
+  const wordInfo = WORD_DICTIONARY[myWord?.toLowerCase()] || null
 
   const handleReady = () => {
     if (!isReady) {
@@ -43,17 +63,37 @@ export default function Reveal() {
             <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">(Keep it a secret!)</p>
           </div>
         ) : (
-          <div className="flex flex-col items-center animate-in zoom-in-[0.85] fade-in duration-500">
-            <p className="text-accent/80 text-xs uppercase tracking-[0.25em] mb-4 font-bold drop-shadow-[0_0_5px_rgba(163,230,53,0.5)]">
+          <div className="flex flex-col items-center animate-in fade-in duration-300 w-full">
+            <p className="text-accent/80 text-xs uppercase tracking-[0.25em] mb-2 font-bold drop-shadow-[0_0_5px_rgba(163,230,53,0.5)]">
               Your Word
             </p>
-            <p className="text-5xl font-black text-white tracking-tight mb-5 drop-shadow-[0_0_35px_rgba(163,230,53,0.6)] animate-in slide-in-from-bottom-2 duration-500">
-              {myWord}
-            </p>
-            <div className="h-px w-16 bg-slate-700 mb-4 rounded-full"></div>
-            <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">
-              Memorize it. Do not say it aloud.
-            </p>
+
+            <div className="flex flex-col items-center justify-center min-h-[120px]">
+              {/* Layer 1: Main Word (Instant) */}
+              <p className="text-5xl font-black text-white tracking-tight drop-shadow-[0_0_35px_rgba(163,230,53,0.6)] animate-in zoom-in-[0.9] slide-in-from-bottom-2 duration-300">
+                {myWord}
+              </p>
+
+              {/* Layer 2: Emoji (200ms delay) */}
+              {wordInfo && (
+                <div className="text-4xl mt-3 animate-in zoom-in-[0.5] fade-in duration-300 delay-200 fill-mode-backwards drop-shadow-xl">
+                  {wordInfo.emoji}
+                </div>
+              )}
+            </div>
+
+            <div className="h-px w-full max-w-[120px] bg-slate-700/60 my-4 rounded-full"></div>
+
+            {/* Layer 3: Meaning (400ms delay) */}
+            {wordInfo ? (
+              <p className="text-slate-300 text-[13px] font-medium tracking-wide text-center px-2 animate-in slide-in-from-bottom-2 fade-in duration-300 delay-[400ms] fill-mode-backwards opacity-80">
+                {wordInfo.meaning}
+              </p>
+            ) : (
+              <p className="text-slate-400 text-xs font-medium uppercase tracking-widest animate-in fade-in duration-300 delay-[400ms] fill-mode-backwards">
+                Memorize it. Do not say it aloud.
+              </p>
+            )}
           </div>
         )}
       </button>
