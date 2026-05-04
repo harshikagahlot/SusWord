@@ -67,6 +67,7 @@ function gameReducer(state, action) {
         ...state,
         gameState: GAME_STATES.REVEAL,
         myWord: action.word,
+        isImposter: action.isImposter,
         players: action.players,
         readyCount: 0,
         totalCount: action.players.length,
@@ -192,9 +193,9 @@ export function GameProvider({ children }) {
       dispatch({ type: 'LOBBY_UPDATE', players, hostId })
     })
 
-    socket.on('game-started', ({ word, players }) => {
+    socket.on('game-started', ({ word, isImposter, players }) => {
       console.log('📥 GAME_STARTED! Word received.')
-      dispatch({ type: 'GAME_STARTED', word, players })
+      dispatch({ type: 'GAME_STARTED', word, isImposter, players })
     })
 
     socket.on('ready-update', ({ readyCount, totalCount, readyPlayerIds }) => {

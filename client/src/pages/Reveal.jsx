@@ -5,7 +5,7 @@ import { WORD_DICTIONARY } from '../wordDictionary'
 
 export default function Reveal() {
   const { state, actions } = useGame()
-  const { myWord, readyCount, totalCount, readyPlayerIds } = state
+  const { myWord, isImposter, readyCount, totalCount, readyPlayerIds } = state
   const [revealStage, setRevealStage] = useState('locked') // 'locked' | 'anticipating' | 'revealed'
   const [isReady, setIsReady] = useState(false)
 
@@ -107,8 +107,8 @@ export default function Reveal() {
 
             {/* Layer 4: Role Message (Delayed fade in) */}
             <div className="mt-5 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 opacity-0 animate-[fade-in_0.5s_ease-out_forwards] shadow-lg" style={{ animationDelay: '600ms' }}>
-              <p className={`text-[13px] font-bold tracking-wide text-center leading-tight ${wordData?.isImposter ? 'text-danger/90' : 'text-accent/90'}`}>
-                {wordData?.isImposter 
+              <p className={`text-[13px] font-bold tracking-wide text-center leading-tight ${isImposter ? 'text-danger/90' : 'text-accent/90'}`}>
+                {isImposter 
                   ? "You don't know the word. Blend in carefully." 
                   : "Protect this word. Don't be obvious."}
               </p>

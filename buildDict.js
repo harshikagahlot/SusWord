@@ -303,14 +303,12 @@ WORD_PAIRS.forEach(p => {
 
   dict[mw] = { 
     emoji: customMapping[mw]?.e || catEmojis[p.category] || '✨', 
-    meaning: customMapping[mw]?.h || ('A ' + p.category.toLowerCase() + ' term'),
-    isImposter: false
+    meaning: customMapping[mw]?.h || ('A ' + p.category.toLowerCase() + ' term')
   };
 
   dict[iw] = { 
     emoji: customMapping[iw]?.e || catEmojis[p.category] || '✨', 
-    meaning: customMapping[iw]?.h || ('A ' + p.category.toLowerCase() + ' term'),
-    isImposter: true
+    meaning: customMapping[iw]?.h || ('A ' + p.category.toLowerCase() + ' term')
   };
 });
 

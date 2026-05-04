@@ -1,1352 +1,1082 @@
 export const WORD_DICTIONARY = {
   "dolphin": {
     "emoji": "🐬",
-    "meaning": "Leaps out of the ocean",
-    "isImposter": false
+    "meaning": "Leaps out of the ocean"
   },
   "whale": {
     "emoji": "🐋",
-    "meaning": "The largest swimmer",
-    "isImposter": true
+    "meaning": "The largest swimmer"
   },
   "wolf": {
     "emoji": "🐺",
-    "meaning": "Howls at the moon",
-    "isImposter": false
+    "meaning": "Howls at the moon"
   },
   "fox": {
     "emoji": "🦊",
-    "meaning": "Sneaky and orange",
-    "isImposter": true
+    "meaning": "Sneaky and orange"
   },
   "eagle": {
     "emoji": "🦅",
-    "meaning": "Soars high in the sky",
-    "isImposter": false
+    "meaning": "Soars high in the sky"
   },
   "hawk": {
     "emoji": "🦅",
-    "meaning": "A sharp-eyed hunter",
-    "isImposter": true
+    "meaning": "A sharp-eyed hunter"
   },
   "frog": {
     "emoji": "🐸",
-    "meaning": "Hops near the pond",
-    "isImposter": false
+    "meaning": "Hops near the pond"
   },
   "toad": {
     "emoji": "🐸",
-    "meaning": "Bumpy and croaks",
-    "isImposter": true
+    "meaning": "Bumpy and croaks"
   },
   "alligator": {
     "emoji": "🐊",
-    "meaning": "Snaps in the swamp",
-    "isImposter": false
+    "meaning": "Snaps in the swamp"
   },
   "crocodile": {
     "emoji": "🐊",
-    "meaning": "Lurks in the river",
-    "isImposter": true
+    "meaning": "Lurks in the river"
   },
   "turtle": {
     "emoji": "🐢",
-    "meaning": "Carries its house",
-    "isImposter": false
+    "meaning": "Carries its house"
   },
   "tortoise": {
     "emoji": "🐢",
-    "meaning": "Slow and steady on land",
-    "isImposter": true
+    "meaning": "Slow and steady on land"
   },
   "rabbit": {
     "emoji": "🐰",
-    "meaning": "Loves eating carrots",
-    "isImposter": false
+    "meaning": "Loves eating carrots"
   },
   "hare": {
     "emoji": "🐇",
-    "meaning": "Fast and furry",
-    "isImposter": true
+    "meaning": "Fast and furry"
   },
   "leopard": {
     "emoji": "🐆",
-    "meaning": "Spotted and fast",
-    "isImposter": false
+    "meaning": "Spotted and fast"
   },
   "cheetah": {
     "emoji": "🐆",
-    "meaning": "The fastest runner",
-    "isImposter": true
+    "meaning": "The fastest runner"
   },
   "bison": {
     "emoji": "s",
-    "meaning": "Roams the plains",
-    "isImposter": false
+    "meaning": "Roams the plains"
   },
   "buffalo": {
     "emoji": "🐃",
-    "meaning": "A heavy grazer",
-    "isImposter": true
+    "meaning": "A heavy grazer"
   },
   "donkey": {
     "emoji": "🐴",
-    "meaning": "Known to be stubborn",
-    "isImposter": false
+    "meaning": "Known to be stubborn"
   },
   "mule": {
     "emoji": "🐴",
-    "meaning": "A hard worker",
-    "isImposter": true
+    "meaning": "A hard worker"
   },
   "crow": {
     "emoji": "🐦‍⬛",
-    "meaning": "Black and smart",
-    "isImposter": false
+    "meaning": "Black and smart"
   },
   "raven": {
     "emoji": "🐦‍⬛",
-    "meaning": "A dark, mystical bird",
-    "isImposter": true
+    "meaning": "A dark, mystical bird"
   },
   "sparrow": {
     "emoji": "🐦",
-    "meaning": "A common little bird",
-    "isImposter": false
+    "meaning": "A common little bird"
   },
   "finch": {
     "emoji": "🐦",
-    "meaning": "A colorful little flyer",
-    "isImposter": true
+    "meaning": "A colorful little flyer"
   },
   "seal": {
     "emoji": "🦭",
-    "meaning": "Barks and claps",
-    "isImposter": false
+    "meaning": "Barks and claps"
   },
   "sea lion": {
     "emoji": "🦭",
-    "meaning": "Balances balls on its nose",
-    "isImposter": true
+    "meaning": "Balances balls on its nose"
   },
   "shrimp": {
     "emoji": "🦐",
-    "meaning": "Tiny and pink",
-    "isImposter": false
+    "meaning": "Tiny and pink"
   },
   "prawn": {
     "emoji": "🦐",
-    "meaning": "Delicious in a cocktail",
-    "isImposter": true
+    "meaning": "Delicious in a cocktail"
   },
   "moth": {
     "emoji": "🦋",
-    "meaning": "Drawn to the flame",
-    "isImposter": false
+    "meaning": "Drawn to the flame"
   },
   "butterfly": {
     "emoji": "🦋",
-    "meaning": "Starts as a caterpillar",
-    "isImposter": true
+    "meaning": "Starts as a caterpillar"
   },
   "llama": {
     "emoji": "🦙",
-    "meaning": "Might spit at you",
-    "isImposter": false
+    "meaning": "Might spit at you"
   },
   "alpaca": {
     "emoji": "🦙",
-    "meaning": "Very soft wool",
-    "isImposter": true
+    "meaning": "Very soft wool"
   },
   "caterpillar": {
     "emoji": "🐛",
-    "meaning": "Crawls on leaves",
-    "isImposter": false
+    "meaning": "Crawls on leaves"
   },
   "larva": {
     "emoji": "🐛",
-    "meaning": "Before it gets wings",
-    "isImposter": true
+    "meaning": "Before it gets wings"
   },
   "pigeon": {
     "emoji": "🕊️",
-    "meaning": "Hangs out in the city",
-    "isImposter": false
+    "meaning": "Hangs out in the city"
   },
   "dove": {
     "emoji": "🕊️",
-    "meaning": "Symbol of peace",
-    "isImposter": true
+    "meaning": "Symbol of peace"
   },
   "panther": {
     "emoji": "🐈‍⬛",
-    "meaning": "Sleek and black",
-    "isImposter": false
+    "meaning": "Sleek and black"
   },
   "jaguar": {
     "emoji": "🐆",
-    "meaning": "Spotted jungle cat",
-    "isImposter": true
+    "meaning": "Spotted jungle cat"
   },
   "otter": {
     "emoji": "🦦",
-    "meaning": "Holds hands while sleeping",
-    "isImposter": false
+    "meaning": "Holds hands while sleeping"
   },
   "beaver": {
     "emoji": "🦫",
-    "meaning": "Builds dams in the river",
-    "isImposter": true
+    "meaning": "Builds dams in the river"
   },
   "pancake": {
     "emoji": "🥞",
-    "meaning": "Covered in syrup",
-    "isImposter": false
+    "meaning": "Covered in syrup"
   },
   "waffle": {
     "emoji": "🧇",
-    "meaning": "Has square pockets",
-    "isImposter": true
+    "meaning": "Has square pockets"
   },
   "butter": {
     "emoji": "🧈",
-    "meaning": "Melts on toast",
-    "isImposter": false
+    "meaning": "Melts on toast"
   },
   "margarine": {
     "emoji": "🧈",
-    "meaning": "A yellow spread",
-    "isImposter": true
+    "meaning": "A yellow spread"
   },
   "sushi": {
     "emoji": "🍣",
-    "meaning": "Wrapped in seaweed",
-    "isImposter": false
+    "meaning": "Wrapped in seaweed"
   },
   "sashimi": {
     "emoji": "🍣",
-    "meaning": "Fresh slices of fish",
-    "isImposter": true
+    "meaning": "Fresh slices of fish"
   },
   "cupcake": {
     "emoji": "🧁",
-    "meaning": "Has frosting on top",
-    "isImposter": false
+    "meaning": "Has frosting on top"
   },
   "muffin": {
     "emoji": "🧁",
-    "meaning": "A morning baked good",
-    "isImposter": true
+    "meaning": "A morning baked good"
   },
   "coffee": {
     "emoji": "☕",
-    "meaning": "Your morning energy",
-    "isImposter": false
+    "meaning": "Your morning energy"
   },
   "espresso": {
     "emoji": "☕",
-    "meaning": "A strong, tiny shot",
-    "isImposter": true
+    "meaning": "A strong, tiny shot"
   },
   "jam": {
     "emoji": "🍓",
-    "meaning": "Spread it on bread",
-    "isImposter": false
+    "meaning": "Spread it on bread"
   },
   "jelly": {
     "emoji": "🍇",
-    "meaning": "Sweet and wobbly",
-    "isImposter": true
+    "meaning": "Sweet and wobbly"
   },
   "soup": {
     "emoji": "🥣",
-    "meaning": "Eat it with a spoon",
-    "isImposter": false
+    "meaning": "Eat it with a spoon"
   },
   "stew": {
     "emoji": "🍲",
-    "meaning": "Thick and hearty",
-    "isImposter": true
+    "meaning": "Thick and hearty"
   },
   "pizza": {
     "emoji": "🍕",
-    "meaning": "Comes in a square box",
-    "isImposter": false
+    "meaning": "Comes in a square box"
   },
   "flatbread": {
     "emoji": "🥖",
-    "meaning": "Crispy and baked",
-    "isImposter": true
+    "meaning": "Crispy and baked"
   },
   "mango": {
     "emoji": "🥭",
-    "meaning": "Sweet and tropical",
-    "isImposter": false
+    "meaning": "Sweet and tropical"
   },
   "papaya": {
     "emoji": "🥭",
-    "meaning": "Has lots of black seeds",
-    "isImposter": true
+    "meaning": "Has lots of black seeds"
   },
   "donut": {
     "emoji": "🍩",
-    "meaning": "Has a hole in the middle",
-    "isImposter": false
+    "meaning": "Has a hole in the middle"
   },
   "bagel": {
     "emoji": "🥯",
-    "meaning": "Great with cream cheese",
-    "isImposter": true
+    "meaning": "Great with cream cheese"
   },
   "biscuit": {
     "emoji": "🍪",
-    "meaning": "Dip it in tea",
-    "isImposter": false
+    "meaning": "Dip it in tea"
   },
   "cracker": {
     "emoji": "🍘",
-    "meaning": "Crispy and salty",
-    "isImposter": true
+    "meaning": "Crispy and salty"
   },
   "milkshake": {
     "emoji": "🥤",
-    "meaning": "Drink it through a straw",
-    "isImposter": false
+    "meaning": "Drink it through a straw"
   },
   "smoothie": {
     "emoji": "🥤",
-    "meaning": "Blended and fruity",
-    "isImposter": true
+    "meaning": "Blended and fruity"
   },
   "noodle": {
     "emoji": "🍜",
-    "meaning": "Slurp it from a bowl",
-    "isImposter": false
+    "meaning": "Slurp it from a bowl"
   },
   "pasta": {
     "emoji": "🍝",
-    "meaning": "Covered in sauce",
-    "isImposter": true
+    "meaning": "Covered in sauce"
   },
   "taco": {
     "emoji": "🌮",
-    "meaning": "Folded and crunchy",
-    "isImposter": false
+    "meaning": "Folded and crunchy"
   },
   "burrito": {
     "emoji": "🌯",
-    "meaning": "Wrapped in foil",
-    "isImposter": true
+    "meaning": "Wrapped in foil"
   },
   "cake": {
     "emoji": "🎂",
-    "meaning": "Blow out the candles",
-    "isImposter": false
+    "meaning": "Blow out the candles"
   },
   "pie": {
     "emoji": "🥧",
-    "meaning": "Baked with a crust",
-    "isImposter": true
+    "meaning": "Baked with a crust"
   },
   "popcorn": {
     "emoji": "🍿",
-    "meaning": "Eat it at the movies",
-    "isImposter": false
+    "meaning": "Eat it at the movies"
   },
   "puffed rice": {
     "emoji": "🍚",
-    "meaning": "Light and airy",
-    "isImposter": true
+    "meaning": "Light and airy"
   },
   "lemonade": {
     "emoji": "🍋",
-    "meaning": "Sweet, sour, and cold",
-    "isImposter": false
+    "meaning": "Sweet, sour, and cold"
   },
   "limeade": {
     "emoji": "🍋",
-    "meaning": "Green and refreshing",
-    "isImposter": true
+    "meaning": "Green and refreshing"
   },
   "cereal": {
     "emoji": "🥣",
-    "meaning": "Pour milk on it",
-    "isImposter": false
+    "meaning": "Pour milk on it"
   },
   "granola": {
     "emoji": "🥣",
-    "meaning": "Crunchy morning snack",
-    "isImposter": true
+    "meaning": "Crunchy morning snack"
   },
   "lasagna": {
     "emoji": "🍝",
-    "meaning": "Layers of cheese and pasta",
-    "isImposter": false
+    "meaning": "Layers of cheese and pasta"
   },
   "moussaka": {
     "emoji": "🍆",
-    "meaning": "A baked dish",
-    "isImposter": true
+    "meaning": "A baked dish"
   },
   "pretzel": {
     "emoji": "🥨",
-    "meaning": "Twisted and salty",
-    "isImposter": false
+    "meaning": "Twisted and salty"
   },
   "breadstick": {
     "emoji": "🥖",
-    "meaning": "Served before the meal",
-    "isImposter": true
+    "meaning": "Served before the meal"
   },
   "beach": {
     "emoji": "🏖️",
-    "meaning": "Sand, sun, and waves",
-    "isImposter": false
+    "meaning": "Sand, sun, and waves"
   },
   "desert": {
     "emoji": "🏜️",
-    "meaning": "Hot, dry, and sandy",
-    "isImposter": true
+    "meaning": "Hot, dry, and sandy"
   },
   "library": {
     "emoji": "📚",
-    "meaning": "Be quiet in here",
-    "isImposter": false
+    "meaning": "Be quiet in here"
   },
   "bookstore": {
     "emoji": "📖",
-    "meaning": "Where you buy stories",
-    "isImposter": true
+    "meaning": "Where you buy stories"
   },
   "hotel": {
     "emoji": "🏨",
-    "meaning": "Stay here on vacation",
-    "isImposter": false
+    "meaning": "Stay here on vacation"
   },
   "motel": {
     "emoji": "🏩",
-    "meaning": "Stop here on a roadtrip",
-    "isImposter": true
+    "meaning": "Stop here on a roadtrip"
   },
   "castle": {
     "emoji": "🏰",
-    "meaning": "Where a king lives",
-    "isImposter": false
+    "meaning": "Where a king lives"
   },
   "palace": {
     "emoji": "🕌",
-    "meaning": "A grand residence",
-    "isImposter": true
+    "meaning": "A grand residence"
   },
   "lake": {
     "emoji": "🏞️",
-    "meaning": "A calm body of water",
-    "isImposter": false
+    "meaning": "A calm body of water"
   },
   "pond": {
     "emoji": "🦆",
-    "meaning": "Where the ducks swim",
-    "isImposter": true
+    "meaning": "Where the ducks swim"
   },
   "museum": {
     "emoji": "🏛️",
-    "meaning": "Full of history",
-    "isImposter": false
+    "meaning": "Full of history"
   },
   "gallery": {
     "emoji": "🖼️",
-    "meaning": "Look at the art",
-    "isImposter": true
+    "meaning": "Look at the art"
   },
   "cinema": {
     "emoji": "🎬",
-    "meaning": "Watch the big screen",
-    "isImposter": false
+    "meaning": "Watch the big screen"
   },
   "theatre": {
     "emoji": "🎭",
-    "meaning": "Watch a live play",
-    "isImposter": true
+    "meaning": "Watch a live play"
   },
   "temple": {
     "emoji": "⛩️",
-    "meaning": "A place of worship",
-    "isImposter": false
+    "meaning": "A place of worship"
   },
   "shrine": {
     "emoji": "⛩️",
-    "meaning": "A sacred place",
-    "isImposter": true
+    "meaning": "A sacred place"
   },
   "clinic": {
     "emoji": "⚕️",
-    "meaning": "Go here when sick",
-    "isImposter": false
+    "meaning": "Go here when sick"
   },
   "hospital": {
     "emoji": "🏥",
-    "meaning": "Where you get treated",
-    "isImposter": true
+    "meaning": "Where you get treated"
   },
   "supermarket": {
     "emoji": "🛒",
-    "meaning": "Buy your groceries here",
-    "isImposter": false
+    "meaning": "Buy your groceries here"
   },
   "grocery": {
     "emoji": "🛒",
-    "meaning": "Where you buy food",
-    "isImposter": true
+    "meaning": "Where you buy food"
   },
   "gym": {
     "emoji": "🏋️",
-    "meaning": "Where you go to sweat",
-    "isImposter": false
+    "meaning": "Where you go to sweat"
   },
   "studio": {
     "emoji": "🩰",
-    "meaning": "A room for practice",
-    "isImposter": true
+    "meaning": "A room for practice"
   },
   "lighthouse": {
     "emoji": "🗼",
-    "meaning": "Guides ships at night",
-    "isImposter": false
+    "meaning": "Guides ships at night"
   },
   "watchtower": {
     "emoji": "🗼",
-    "meaning": "Look out from here",
-    "isImposter": true
+    "meaning": "Look out from here"
   },
   "meadow": {
     "emoji": "🌼",
-    "meaning": "A field of grass",
-    "isImposter": false
+    "meaning": "A field of grass"
   },
   "prairie": {
     "emoji": "🌾",
-    "meaning": "Wide open grassy land",
-    "isImposter": true
+    "meaning": "Wide open grassy land"
   },
   "swamp": {
     "emoji": "🐊",
-    "meaning": "Muddy and wet",
-    "isImposter": false
+    "meaning": "Muddy and wet"
   },
   "marsh": {
     "emoji": "🐸",
-    "meaning": "A wet wetland",
-    "isImposter": true
+    "meaning": "A wet wetland"
   },
   "volcano": {
     "emoji": "🌋",
-    "meaning": "Erupts with lava",
-    "isImposter": false
+    "meaning": "Erupts with lava"
   },
   "geyser": {
     "emoji": "⛲",
-    "meaning": "Shoots hot water",
-    "isImposter": true
+    "meaning": "Shoots hot water"
   },
   "guitar": {
     "emoji": "🎸",
-    "meaning": "Strum the strings",
-    "isImposter": false
+    "meaning": "Strum the strings"
   },
   "ukulele": {
     "emoji": "🎸",
-    "meaning": "Small and Hawaiian",
-    "isImposter": true
+    "meaning": "Small and Hawaiian"
   },
   "couch": {
     "emoji": "🛋️",
-    "meaning": "Sit and watch TV",
-    "isImposter": false
+    "meaning": "Sit and watch TV"
   },
   "sofa": {
     "emoji": "🛋️",
-    "meaning": "Lounge on this",
-    "isImposter": true
+    "meaning": "Lounge on this"
   },
   "sword": {
     "emoji": "⚔️",
-    "meaning": "Sharp and medieval",
-    "isImposter": false
+    "meaning": "Sharp and medieval"
   },
   "dagger": {
     "emoji": "🗡️",
-    "meaning": "Short and sharp",
-    "isImposter": true
+    "meaning": "Short and sharp"
   },
   "clock": {
     "emoji": "🕰️",
-    "meaning": "Tells you the time",
-    "isImposter": false
+    "meaning": "Tells you the time"
   },
   "watch": {
     "emoji": "⌚",
-    "meaning": "Wear it on your wrist",
-    "isImposter": true
+    "meaning": "Wear it on your wrist"
   },
   "pillow": {
     "emoji": "🛌",
-    "meaning": "Rest your head here",
-    "isImposter": false
+    "meaning": "Rest your head here"
   },
   "cushion": {
     "emoji": "🛋️",
-    "meaning": "Soft and comfortable",
-    "isImposter": true
+    "meaning": "Soft and comfortable"
   },
   "lamp": {
     "emoji": "💡",
-    "meaning": "Turn it on to see",
-    "isImposter": false
+    "meaning": "Turn it on to see"
   },
   "lantern": {
     "emoji": "🏮",
-    "meaning": "Carry it in the dark",
-    "isImposter": true
+    "meaning": "Carry it in the dark"
   },
   "mirror": {
     "emoji": "🪞",
-    "meaning": "Look at yourself",
-    "isImposter": false
+    "meaning": "Look at yourself"
   },
   "window": {
     "emoji": "🪟",
-    "meaning": "Look outside",
-    "isImposter": true
+    "meaning": "Look outside"
   },
   "rifle": {
     "emoji": "🔫",
-    "meaning": "A long firearm",
-    "isImposter": false
+    "meaning": "A long firearm"
   },
   "shotgun": {
     "emoji": "🔫",
-    "meaning": "A powerful firearm",
-    "isImposter": true
+    "meaning": "A powerful firearm"
   },
   "pen": {
     "emoji": "🖊️",
-    "meaning": "Write with ink",
-    "isImposter": false
+    "meaning": "Write with ink"
   },
   "pencil": {
     "emoji": "✏️",
-    "meaning": "Has an eraser on top",
-    "isImposter": true
+    "meaning": "Has an eraser on top"
   },
   "mug": {
     "emoji": "☕",
-    "meaning": "Hold it by the handle",
-    "isImposter": false
+    "meaning": "Hold it by the handle"
   },
   "cup": {
     "emoji": "🍵",
-    "meaning": "Drink out of it",
-    "isImposter": true
+    "meaning": "Drink out of it"
   },
   "bucket": {
     "emoji": "🪣",
-    "meaning": "Fill it with water",
-    "isImposter": false
+    "meaning": "Fill it with water"
   },
   "pail": {
     "emoji": "🪣",
-    "meaning": "Carry sand in it",
-    "isImposter": true
+    "meaning": "Carry sand in it"
   },
   "ladder": {
     "emoji": "🪜",
-    "meaning": "Climb up high",
-    "isImposter": false
+    "meaning": "Climb up high"
   },
   "staircase": {
     "emoji": "🪜",
-    "meaning": "Walk up to the next floor",
-    "isImposter": true
+    "meaning": "Walk up to the next floor"
   },
   "telescope": {
     "emoji": "🔭",
-    "meaning": "Look at the stars",
-    "isImposter": false
+    "meaning": "Look at the stars"
   },
   "binoculars": {
     "emoji": "🔭",
-    "meaning": "Look at things far away",
-    "isImposter": true
+    "meaning": "Look at things far away"
   },
   "violin": {
     "emoji": "🎻",
-    "meaning": "Play it with a bow",
-    "isImposter": false
+    "meaning": "Play it with a bow"
   },
   "cello": {
     "emoji": "🎻",
-    "meaning": "A large string instrument",
-    "isImposter": true
+    "meaning": "A large string instrument"
   },
   "trumpet": {
     "emoji": "🎺",
-    "meaning": "Blow into the brass",
-    "isImposter": false
+    "meaning": "Blow into the brass"
   },
   "trombone": {
     "emoji": "🎺",
-    "meaning": "Slide the brass",
-    "isImposter": true
+    "meaning": "Slide the brass"
   },
   "microscope": {
     "emoji": "🔬",
-    "meaning": "Look at tiny things",
-    "isImposter": false
+    "meaning": "Look at tiny things"
   },
   "magnifier": {
     "emoji": "🔍",
-    "meaning": "Make things look bigger",
-    "isImposter": true
+    "meaning": "Make things look bigger"
   },
   "thermos": {
     "emoji": "🍶",
-    "meaning": "Keeps your drink hot",
-    "isImposter": false
+    "meaning": "Keeps your drink hot"
   },
   "flask": {
     "emoji": "🧪",
-    "meaning": "Carry a sip with you",
-    "isImposter": true
+    "meaning": "Carry a sip with you"
   },
   "compass": {
     "emoji": "🧭",
-    "meaning": "Always points North",
-    "isImposter": false
+    "meaning": "Always points North"
   },
   "protractor": {
     "emoji": "📐",
-    "meaning": "Measures angles",
-    "isImposter": true
+    "meaning": "Measures angles"
   },
   "hammock": {
     "emoji": "🛏️",
-    "meaning": "Swing between trees",
-    "isImposter": false
+    "meaning": "Swing between trees"
   },
   "swing": {
     "emoji": "🛝",
-    "meaning": "Push me higher",
-    "isImposter": true
+    "meaning": "Push me higher"
   },
   "gloves": {
     "emoji": "🧤",
-    "meaning": "Keep your hands warm",
-    "isImposter": false
+    "meaning": "Keep your hands warm"
   },
   "mittens": {
     "emoji": "🧤",
-    "meaning": "No fingers, just a thumb",
-    "isImposter": true
+    "meaning": "No fingers, just a thumb"
   },
   "swimming": {
     "emoji": "🏊",
-    "meaning": "Do this in a pool",
-    "isImposter": false
+    "meaning": "Do this in a pool"
   },
   "diving": {
     "emoji": "🤿",
-    "meaning": "Jump in head first",
-    "isImposter": true
+    "meaning": "Jump in head first"
   },
   "painting": {
     "emoji": "🎨",
-    "meaning": "Create art on a canvas",
-    "isImposter": false
+    "meaning": "Create art on a canvas"
   },
   "drawing": {
     "emoji": "✏️",
-    "meaning": "Sketch on paper",
-    "isImposter": true
+    "meaning": "Sketch on paper"
   },
   "jogging": {
     "emoji": "🏃",
-    "meaning": "A steady run",
-    "isImposter": false
+    "meaning": "A steady run"
   },
   "sprinting": {
     "emoji": "🏃",
-    "meaning": "Run as fast as you can",
-    "isImposter": true
+    "meaning": "Run as fast as you can"
   },
   "camping": {
     "emoji": "⛺",
-    "meaning": "Sleep in a tent",
-    "isImposter": false
+    "meaning": "Sleep in a tent"
   },
   "hiking": {
     "emoji": "🥾",
-    "meaning": "Walk up a mountain",
-    "isImposter": true
+    "meaning": "Walk up a mountain"
   },
   "singing": {
     "emoji": "🎤",
-    "meaning": "Use your voice",
-    "isImposter": false
+    "meaning": "Use your voice"
   },
   "humming": {
     "emoji": "🎵",
-    "meaning": "Make a sound with your mouth closed",
-    "isImposter": true
+    "meaning": "Make a sound with your mouth closed"
   },
   "knitting": {
     "emoji": "🧶",
-    "meaning": "Make a sweater with yarn",
-    "isImposter": false
+    "meaning": "Make a sweater with yarn"
   },
   "crocheting": {
     "emoji": "🧶",
-    "meaning": "Hooking yarn together",
-    "isImposter": true
+    "meaning": "Hooking yarn together"
   },
   "surfing": {
     "emoji": "🏄",
-    "meaning": "Ride the waves",
-    "isImposter": false
+    "meaning": "Ride the waves"
   },
   "wakeboarding": {
     "emoji": "🏄",
-    "meaning": "Pulled by a boat",
-    "isImposter": true
+    "meaning": "Pulled by a boat"
   },
   "boxing": {
     "emoji": "🥊",
-    "meaning": "Punch with big gloves",
-    "isImposter": false
+    "meaning": "Punch with big gloves"
   },
   "wrestling": {
     "emoji": "🤼",
-    "meaning": "Grapple on a mat",
-    "isImposter": true
+    "meaning": "Grapple on a mat"
   },
   "skiing": {
     "emoji": "🎿",
-    "meaning": "Slide down the snow",
-    "isImposter": false
+    "meaning": "Slide down the snow"
   },
   "snowboarding": {
     "emoji": "🏂",
-    "meaning": "Ride the snow sideways",
-    "isImposter": true
+    "meaning": "Ride the snow sideways"
   },
   "gardening": {
     "emoji": "🪴",
-    "meaning": "Plant flowers and vegetables",
-    "isImposter": false
+    "meaning": "Plant flowers and vegetables"
   },
   "farming": {
     "emoji": "🚜",
-    "meaning": "Grow crops on a large scale",
-    "isImposter": true
+    "meaning": "Grow crops on a large scale"
   },
   "baking": {
     "emoji": "🧁",
-    "meaning": "Make a cake in the oven",
-    "isImposter": false
+    "meaning": "Make a cake in the oven"
   },
   "cooking": {
     "emoji": "🍳",
-    "meaning": "Make a meal on the stove",
-    "isImposter": true
+    "meaning": "Make a meal on the stove"
   },
   "cycling": {
     "emoji": "🚴",
-    "meaning": "Pedal down the street",
-    "isImposter": false
+    "meaning": "Pedal down the street"
   },
   "skating": {
     "emoji": "⛸️",
-    "meaning": "Glide on ice or wheels",
-    "isImposter": true
+    "meaning": "Glide on ice or wheels"
   },
   "fishing": {
     "emoji": "🎣",
-    "meaning": "Catch something in the water",
-    "isImposter": false
+    "meaning": "Catch something in the water"
   },
   "hunting": {
     "emoji": "🏹",
-    "meaning": "Track and capture",
-    "isImposter": true
+    "meaning": "Track and capture"
   },
   "meditation": {
     "emoji": "🧘",
-    "meaning": "Sit quietly and breathe",
-    "isImposter": false
+    "meaning": "Sit quietly and breathe"
   },
   "yoga": {
     "emoji": "🧘",
-    "meaning": "Stretch and pose",
-    "isImposter": true
+    "meaning": "Stretch and pose"
   },
   "photography": {
     "emoji": "📷",
-    "meaning": "Take a picture",
-    "isImposter": false
+    "meaning": "Take a picture"
   },
   "videography": {
     "emoji": "📹",
-    "meaning": "Record a movie",
-    "isImposter": true
+    "meaning": "Record a movie"
   },
   "jacket": {
     "emoji": "🧥",
-    "meaning": "Zip it up when it is cold",
-    "isImposter": false
+    "meaning": "Zip it up when it is cold"
   },
   "coat": {
     "emoji": "🧥",
-    "meaning": "Wear it in the winter",
-    "isImposter": true
+    "meaning": "Wear it in the winter"
   },
   "sandals": {
     "emoji": "🩴",
-    "meaning": "Wear them to the beach",
-    "isImposter": false
+    "meaning": "Wear them to the beach"
   },
   "slippers": {
     "emoji": "🥿",
-    "meaning": "Wear them around the house",
-    "isImposter": true
+    "meaning": "Wear them around the house"
   },
   "cap": {
     "emoji": "🧢",
-    "meaning": "Wear it on your head",
-    "isImposter": false
+    "meaning": "Wear it on your head"
   },
   "hat": {
     "emoji": "🎩",
-    "meaning": "Keeps the sun out of your eyes",
-    "isImposter": true
+    "meaning": "Keeps the sun out of your eyes"
   },
   "scarf": {
     "emoji": "🧣",
-    "meaning": "Wrap it around your neck",
-    "isImposter": false
+    "meaning": "Wrap it around your neck"
   },
   "shawl": {
     "emoji": "🧣",
-    "meaning": "Drape it over your shoulders",
-    "isImposter": true
+    "meaning": "Drape it over your shoulders"
   },
   "shirt": {
     "emoji": "👕",
-    "meaning": "Has sleeves and a collar",
-    "isImposter": false
+    "meaning": "Has sleeves and a collar"
   },
   "blouse": {
     "emoji": "👚",
-    "meaning": "A nice top to wear",
-    "isImposter": true
+    "meaning": "A nice top to wear"
   },
   "trousers": {
     "emoji": "👖",
-    "meaning": "Wear them on your legs",
-    "isImposter": false
+    "meaning": "Wear them on your legs"
   },
   "leggings": {
     "emoji": "👖",
-    "meaning": "Tight and stretchy",
-    "isImposter": true
+    "meaning": "Tight and stretchy"
   },
   "sneakers": {
     "emoji": "👟",
-    "meaning": "Lace them up to run",
-    "isImposter": false
+    "meaning": "Lace them up to run"
   },
   "trainers": {
     "emoji": "👟",
-    "meaning": "Athletic footwear",
-    "isImposter": true
+    "meaning": "Athletic footwear"
   },
   "hoodie": {
     "emoji": "🧥",
-    "meaning": "Has a pocket and a hood",
-    "isImposter": false
+    "meaning": "Has a pocket and a hood"
   },
   "sweatshirt": {
     "emoji": "👕",
-    "meaning": "Warm and comfortable",
-    "isImposter": true
+    "meaning": "Warm and comfortable"
   },
   "overalls": {
     "emoji": "👖",
-    "meaning": "Denim with straps",
-    "isImposter": false
+    "meaning": "Denim with straps"
   },
   "dungarees": {
     "emoji": "👖",
-    "meaning": "Workwear with straps",
-    "isImposter": true
+    "meaning": "Workwear with straps"
   },
   "raincoat": {
     "emoji": "🧥",
-    "meaning": "Keeps you dry",
-    "isImposter": false
+    "meaning": "Keeps you dry"
   },
   "windbreaker": {
     "emoji": "🧥",
-    "meaning": "Blocks the breeze",
-    "isImposter": true
+    "meaning": "Blocks the breeze"
   },
   "thunder": {
     "emoji": "🌩️",
-    "meaning": "A loud boom in the sky",
-    "isImposter": false
+    "meaning": "A loud boom in the sky"
   },
   "lightning": {
     "emoji": "⚡",
-    "meaning": "A bright flash in the sky",
-    "isImposter": true
+    "meaning": "A bright flash in the sky"
   },
   "hill": {
     "emoji": "⛰️",
-    "meaning": "Walk up to the top",
-    "isImposter": false
+    "meaning": "Walk up to the top"
   },
   "mountain": {
     "emoji": "🏔️",
-    "meaning": "Very tall and rocky",
-    "isImposter": true
+    "meaning": "Very tall and rocky"
   },
   "river": {
     "emoji": "🏞️",
-    "meaning": "Flowing water",
-    "isImposter": false
+    "meaning": "Flowing water"
   },
   "stream": {
     "emoji": "🏞️",
-    "meaning": "A small flow of water",
-    "isImposter": true
+    "meaning": "A small flow of water"
   },
   "fog": {
     "emoji": "🌫️",
-    "meaning": "A thick cloud on the ground",
-    "isImposter": false
+    "meaning": "A thick cloud on the ground"
   },
   "mist": {
     "emoji": "🌫️",
-    "meaning": "Light drops in the air",
-    "isImposter": true
+    "meaning": "Light drops in the air"
   },
   "sunset": {
     "emoji": "🌇",
-    "meaning": "When the day ends",
-    "isImposter": false
+    "meaning": "When the day ends"
   },
   "sunrise": {
     "emoji": "🌅",
-    "meaning": "When the day begins",
-    "isImposter": true
+    "meaning": "When the day begins"
   },
   "tornado": {
     "emoji": "🌪️",
-    "meaning": "A spinning funnel of wind",
-    "isImposter": false
+    "meaning": "A spinning funnel of wind"
   },
   "cyclone": {
     "emoji": "🌀",
-    "meaning": "A massive storm",
-    "isImposter": true
+    "meaning": "A massive storm"
   },
   "glacier": {
     "emoji": "🧊",
-    "meaning": "A giant block of ice",
-    "isImposter": false
+    "meaning": "A giant block of ice"
   },
   "iceberg": {
     "emoji": "🧊",
-    "meaning": "Floating in the freezing ocean",
-    "isImposter": true
+    "meaning": "Floating in the freezing ocean"
   },
   "coral": {
     "emoji": "🪸",
-    "meaning": "Colorful underwater life",
-    "isImposter": false
+    "meaning": "Colorful underwater life"
   },
   "reef": {
     "emoji": "🪸",
-    "meaning": "A rocky underwater ridge",
-    "isImposter": true
+    "meaning": "A rocky underwater ridge"
   },
   "dune": {
     "emoji": "🏜️",
-    "meaning": "A hill of sand",
-    "isImposter": false
+    "meaning": "A hill of sand"
   },
   "sandbar": {
     "emoji": "🏝️",
-    "meaning": "A ridge of sand in the water",
-    "isImposter": true
+    "meaning": "A ridge of sand in the water"
   },
   "avalanche": {
     "emoji": "🏔️",
-    "meaning": "Snow falling down fast",
-    "isImposter": false
+    "meaning": "Snow falling down fast"
   },
   "landslide": {
     "emoji": "⛰️",
-    "meaning": "Rocks falling down fast",
-    "isImposter": true
+    "meaning": "Rocks falling down fast"
   },
   "doctor": {
     "emoji": "🩺",
-    "meaning": "Treats sick people",
-    "isImposter": false
+    "meaning": "Treats sick people"
   },
   "nurse": {
     "emoji": "💉",
-    "meaning": "Helps the patients",
-    "isImposter": true
+    "meaning": "Helps the patients"
   },
   "teacher": {
     "emoji": "👩‍🏫",
-    "meaning": "Educates the students",
-    "isImposter": false
+    "meaning": "Educates the students"
   },
   "tutor": {
     "emoji": "👨‍🏫",
-    "meaning": "Helps you study",
-    "isImposter": true
+    "meaning": "Helps you study"
   },
   "pilot": {
     "emoji": "✈️",
-    "meaning": "Flies the plane",
-    "isImposter": false
+    "meaning": "Flies the plane"
   },
   "astronaut": {
     "emoji": "🚀",
-    "meaning": "Travels to space",
-    "isImposter": true
+    "meaning": "Travels to space"
   },
   "chef": {
     "emoji": "👨‍🍳",
-    "meaning": "Cooks the meals",
-    "isImposter": false
+    "meaning": "Cooks the meals"
   },
   "baker": {
     "emoji": "🥖",
-    "meaning": "Makes the bread",
-    "isImposter": true
+    "meaning": "Makes the bread"
   },
   "lawyer": {
     "emoji": "⚖️",
-    "meaning": "Argues in court",
-    "isImposter": false
+    "meaning": "Argues in court"
   },
   "judge": {
     "emoji": "⚖️",
-    "meaning": "Makes the final decision",
-    "isImposter": true
+    "meaning": "Makes the final decision"
   },
   "architect": {
     "emoji": "📐",
-    "meaning": "Designs the buildings",
-    "isImposter": false
+    "meaning": "Designs the buildings"
   },
   "engineer": {
     "emoji": "⚙️",
-    "meaning": "Builds and designs",
-    "isImposter": true
+    "meaning": "Builds and designs"
   },
   "journalist": {
     "emoji": "📰",
-    "meaning": "Writes the news",
-    "isImposter": false
+    "meaning": "Writes the news"
   },
   "reporter": {
     "emoji": "🎤",
-    "meaning": "Tells you the news",
-    "isImposter": true
+    "meaning": "Tells you the news"
   },
   "sailor": {
     "emoji": "⚓",
-    "meaning": "Works on a ship",
-    "isImposter": false
+    "meaning": "Works on a ship"
   },
   "soldier": {
     "emoji": "🪖",
-    "meaning": "Fights for the country",
-    "isImposter": true
+    "meaning": "Fights for the country"
   },
   "barber": {
     "emoji": "💈",
-    "meaning": "Cuts your hair",
-    "isImposter": false
+    "meaning": "Cuts your hair"
   },
   "hairdresser": {
     "emoji": "✂️",
-    "meaning": "Styles your hair",
-    "isImposter": true
+    "meaning": "Styles your hair"
   },
   "plumber": {
     "emoji": "🔧",
-    "meaning": "Fixes the pipes",
-    "isImposter": false
+    "meaning": "Fixes the pipes"
   },
   "electrician": {
     "emoji": "⚡",
-    "meaning": "Fixes the wiring",
-    "isImposter": true
+    "meaning": "Fixes the wiring"
   },
   "helicopter": {
     "emoji": "🚁",
-    "meaning": "Has spinning blades on top",
-    "isImposter": false
+    "meaning": "Has spinning blades on top"
   },
   "aeroplane": {
     "emoji": "✈️",
-    "meaning": "Flies high with wings",
-    "isImposter": true
+    "meaning": "Flies high with wings"
   },
   "submarine": {
     "emoji": "🚢",
-    "meaning": "Travels underwater",
-    "isImposter": false
+    "meaning": "Travels underwater"
   },
   "yacht": {
     "emoji": "🛥️",
-    "meaning": "A fancy boat",
-    "isImposter": true
+    "meaning": "A fancy boat"
   },
   "tram": {
     "emoji": "🚋",
-    "meaning": "Rides on rails in the city",
-    "isImposter": false
+    "meaning": "Rides on rails in the city"
   },
   "subway": {
     "emoji": "🚇",
-    "meaning": "Rides on rails underground",
-    "isImposter": true
+    "meaning": "Rides on rails underground"
   },
   "scooter": {
     "emoji": "🛵",
-    "meaning": "A small motor on two wheels",
-    "isImposter": false
+    "meaning": "A small motor on two wheels"
   },
   "moped": {
     "emoji": "🏍️",
-    "meaning": "A motorized bike",
-    "isImposter": true
+    "meaning": "A motorized bike"
   },
   "canoe": {
     "emoji": "🛶",
-    "meaning": "Row it with a paddle",
-    "isImposter": false
+    "meaning": "Row it with a paddle"
   },
   "kayak": {
     "emoji": "🛶",
-    "meaning": "Row it with a double paddle",
-    "isImposter": true
+    "meaning": "Row it with a double paddle"
   },
   "bulldozer": {
     "emoji": "🚜",
-    "meaning": "Pushes heavy dirt",
-    "isImposter": false
+    "meaning": "Pushes heavy dirt"
   },
   "excavator": {
     "emoji": "🏗️",
-    "meaning": "Digs deep holes",
-    "isImposter": true
+    "meaning": "Digs deep holes"
   },
   "carriage": {
     "emoji": "🎠",
-    "meaning": "Pulled by a horse",
-    "isImposter": false
+    "meaning": "Pulled by a horse"
   },
   "chariot": {
     "emoji": "🏎️",
-    "meaning": "Raced in ancient times",
-    "isImposter": true
+    "meaning": "Raced in ancient times"
   },
   "ferry": {
     "emoji": "⛴️",
-    "meaning": "Carries cars across the water",
-    "isImposter": false
+    "meaning": "Carries cars across the water"
   },
   "cruise ship": {
     "emoji": "🛳️",
-    "meaning": "A floating hotel",
-    "isImposter": true
+    "meaning": "A floating hotel"
   },
   "laptop": {
     "emoji": "💻",
-    "meaning": "Folds closed to carry",
-    "isImposter": false
+    "meaning": "Folds closed to carry"
   },
   "tablet": {
     "emoji": "📱",
-    "meaning": "A large touchscreen",
-    "isImposter": true
+    "meaning": "A large touchscreen"
   },
   "keyboard": {
     "emoji": "⌨️",
-    "meaning": "Type on the keys",
-    "isImposter": false
+    "meaning": "Type on the keys"
   },
   "keypad": {
     "emoji": "🔢",
-    "meaning": "Punch in the numbers",
-    "isImposter": true
+    "meaning": "Punch in the numbers"
   },
   "router": {
     "emoji": "📶",
-    "meaning": "Gives you WiFi",
-    "isImposter": false
+    "meaning": "Gives you WiFi"
   },
   "modem": {
     "emoji": "🔌",
-    "meaning": "Connects you to the internet",
-    "isImposter": true
+    "meaning": "Connects you to the internet"
   },
   "printer": {
     "emoji": "🖨️",
-    "meaning": "Puts ink on paper",
-    "isImposter": false
+    "meaning": "Puts ink on paper"
   },
   "scanner": {
     "emoji": "📠",
-    "meaning": "Turns paper into a file",
-    "isImposter": true
+    "meaning": "Turns paper into a file"
   },
   "headphones": {
     "emoji": "🎧",
-    "meaning": "Wear them over your ears",
-    "isImposter": false
+    "meaning": "Wear them over your ears"
   },
   "earbuds": {
     "emoji": "🔈",
-    "meaning": "Put them in your ears",
-    "isImposter": true
+    "meaning": "Put them in your ears"
   },
   "drone": {
     "emoji": "🛸",
-    "meaning": "Flies by remote control",
-    "isImposter": false
+    "meaning": "Flies by remote control"
   },
   "remote car": {
     "emoji": "🏎️",
-    "meaning": "Drive it with a controller",
-    "isImposter": true
+    "meaning": "Drive it with a controller"
   },
   "smartwatch": {
     "emoji": "⌚",
-    "meaning": "Tells time and reads texts",
-    "isImposter": false
+    "meaning": "Tells time and reads texts"
   },
   "fitness band": {
     "emoji": "📟",
-    "meaning": "Tracks your steps",
-    "isImposter": true
+    "meaning": "Tracks your steps"
   }
 };
