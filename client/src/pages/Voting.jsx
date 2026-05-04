@@ -48,9 +48,6 @@ export default function Voting() {
               className={`w-full flex items-center gap-3.5 text-left px-4 py-3.5 ${
                 isSelected ? 'player-card--selected' : ''
               }`}
-              style={
-                isSelected
-                  ? {}
             >
               {/* Avatar */}
               <div
