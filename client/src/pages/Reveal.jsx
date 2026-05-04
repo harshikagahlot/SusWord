@@ -10,6 +10,12 @@ export default function Reveal() {
   const [isReady, setIsReady] = useState(false)
   const [suspenseIndex, setSuspenseIndex] = useState(0)
 
+  const [personalAdvice] = useState(() => {
+    return isImposter 
+      ? (Math.random() > 0.5 ? "Observe others carefully" : "Blend in naturally")
+      : (Math.random() > 0.5 ? "Your clue must be clever" : "Stay subtle");
+  });
+
   const suspenseMessages = [
     "One of you is lying 👀",
     "Think before you speak...",
@@ -133,11 +139,14 @@ export default function Reveal() {
             )}
 
             {/* Layer 4: Role Message (Delayed fade in) */}
-            <div className="mt-5 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 opacity-0 animate-[fade-in_0.5s_ease-out_forwards] shadow-lg" style={{ animationDelay: '600ms' }}>
+            <div className="mt-5 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 opacity-0 animate-[fade-in_0.5s_ease-out_forwards] shadow-lg flex flex-col gap-1.5" style={{ animationDelay: '600ms' }}>
               <p className={`text-[13px] font-bold tracking-wide text-center leading-tight ${isImposter ? 'text-danger/90' : 'text-accent/90'}`}>
                 {isImposter 
                   ? "You don't know the word. Blend in carefully." 
                   : "Protect this word. Don't be obvious."}
+              </p>
+              <p className="text-[11px] text-slate-400 font-bold tracking-[0.08em] text-center uppercase opacity-80">
+                {personalAdvice}
               </p>
             </div>
           </div>
