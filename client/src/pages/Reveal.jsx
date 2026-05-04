@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
+import Card3D from '../components/Card3D'
 
 export default function Reveal() {
   const { state, actions } = useGame()
@@ -24,10 +25,11 @@ export default function Reveal() {
       </p>
 
       {/* Word card with flip animation */}
-      <div
+      <Card3D
         id="word-card"
         className="word-card mx-auto mb-8 max-w-xs"
         onClick={() => setIsFlipped(true)}
+        style={{ touchAction: 'manipulation' }}
       >
         <div className={`word-card-inner ${isFlipped ? 'flipped' : ''}`}>
           {/* Front (hidden) */}
@@ -55,7 +57,7 @@ export default function Reveal() {
             </p>
           </div>
         </div>
-      </div>
+      </Card3D>
 
       {/* Ready button (only after card flip) */}
       {isFlipped && !isReady && (

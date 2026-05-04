@@ -1,4 +1,5 @@
 import { useGame } from '../context/GameContext'
+import Card3D from '../components/Card3D'
 
 export default function ClueReveal() {
   const { state, actions } = useGame()
@@ -23,9 +24,9 @@ export default function ClueReveal() {
       <div className="flex flex-col gap-3 mb-8">
         {clues && clues.length > 0 ? (
           clues.map((c, i) => (
-            <div
+            <Card3D
               key={i}
-              className="player-card flex items-center gap-3.5 group"
+              className="flex items-center gap-3.5 group px-4 py-3.5"
               style={{
                 animationDelay: `${i * 100}ms`,
                 background: 'linear-gradient(135deg, rgba(244,63,94,0.08), rgba(244,63,94,0.02))',
@@ -52,7 +53,7 @@ export default function ClueReveal() {
                   {c.clue ? `"${c.clue}"` : <span className="text-text-muted italic">[No clue submitted]</span>}
                 </p>
               </div>
-            </div>
+            </Card3D>
           ))
         ) : (
           <p className="text-center text-text-muted italic py-4">No clues found...</p>

@@ -47,7 +47,7 @@ export default function ClueRound() {
 
       {/* Whose turn it is */}
       {!clueRoundComplete && currentTurnPlayer && (
-        <div className="player-card text-center mb-5"
+        <Card3D className="text-center mb-5 p-4"
           style={
             isMyTurn
               ? {
@@ -69,7 +69,7 @@ export default function ClueRound() {
             {currentTurnPlayer.name}
             {isMyTurn && <span className="text-text-muted text-sm ml-1.5 font-medium">(you)</span>}
           </p>
-        </div>
+        </Card3D>
       )}
 
       {/* Input (only on my turn) */}
