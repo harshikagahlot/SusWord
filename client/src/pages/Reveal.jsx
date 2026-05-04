@@ -1,48 +1,7 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 
-const WORD_DICTIONARY = {
-  "submarine": {
-    emoji: "🚢",
-    meaning: "A vessel that travels underwater"
-  },
-  "gym": {
-    emoji: "🏋️",
-    meaning: "A place where people exercise"
-  },
-  "doctor": {
-    emoji: "🩺",
-    meaning: "A person who treats patients"
-  },
-  "teacher": {
-    emoji: "👩‍🏫",
-    meaning: "A person who teaches students"
-  },
-  "school": {
-    emoji: "🏫",
-    meaning: "A place for education"
-  },
-  "police": {
-    emoji: "👮",
-    meaning: "A person who maintains law and order"
-  },
-  "pizza": {
-    emoji: "🍕",
-    meaning: "A popular baked dish with toppings"
-  },
-  "car": {
-    emoji: "🚗",
-    meaning: "A vehicle used for transportation"
-  },
-  "phone": {
-    emoji: "📱",
-    meaning: "A device used for communication"
-  },
-  "computer": {
-    emoji: "💻",
-    meaning: "An electronic machine for computing"
-  }
-};
+import { WORD_DICTIONARY } from '../wordDictionary'
 
 export default function Reveal() {
   const { state, actions } = useGame()
