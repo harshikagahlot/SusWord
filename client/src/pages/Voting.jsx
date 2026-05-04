@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
+import Card3D from '../components/Card3D'
 
 export default function Voting() {
   const { state, actions } = useGame()
@@ -38,14 +39,15 @@ export default function Voting() {
         {otherPlayers.map(player => {
           const isSelected = selectedId === player.id
           return (
-            <button
+            <Card3D
+              as="button"
               key={player.id}
               id={`vote-player-${player.id}`}
               disabled={hasVoted}
               onClick={() => !hasVoted && setSelectedId(player.id)}
-              className={`player-card w-full flex items-center gap-3.5 text-left ${
+              className={`w-full flex items-center gap-3.5 text-left px-4 py-3.5 ${
                 isSelected ? 'player-card--selected' : ''
-              } ${hasVoted ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
+              }`}
               style={
                 isSelected
                   ? {}
@@ -103,7 +105,7 @@ export default function Voting() {
                   SUS
                 </div>
               )}
-            </button>
+            </Card3D>
           )
         })}
       </div>

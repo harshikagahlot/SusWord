@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 import { MIN_PLAYERS, MAX_PLAYERS } from '@shared/constants'
+import Card3D from '../components/Card3D'
 
 export default function Lobby() {
   const { state, actions } = useGame()
@@ -116,10 +117,10 @@ export default function Lobby() {
             const isMe = player.id === currentPlayerId
 
             return (
-              <div
+              <Card3D
                 key={player.id}
                 id={`lobby-player-${player.id}`}
-                className="player-card flex items-center gap-3"
+                className="flex items-center gap-3 px-4 py-3.5"
                 style={{
                   background: isMe
                     ? 'linear-gradient(135deg, rgba(163,230,53,0.08), rgba(163,230,53,0.02))'
@@ -181,7 +182,7 @@ export default function Lobby() {
                     👑 HOST
                   </div>
                 )}
-              </div>
+              </Card3D>
             )
           })}
         </div>

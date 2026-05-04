@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
+import Card3D from '../components/Card3D'
 
 export default function Result() {
   const { state, actions } = useGame()
@@ -163,9 +164,9 @@ export default function Result() {
                 const isVotedOut = player.id === votedOutId
 
                 return (
-                  <div
+                  <Card3D
                     key={player.id}
-                    className="player-card flex items-center gap-3.5"
+                    className="flex items-center gap-3.5 px-4 py-3.5"
                     style={
                       isImposter
                         ? {
@@ -253,7 +254,7 @@ export default function Result() {
                         {isImposter ? 'SPY' : 'SAFE'}
                       </div>
                     </div>
-                  </div>
+                  </Card3D>
                 )
               })}
             </div>
