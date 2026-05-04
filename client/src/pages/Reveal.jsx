@@ -10,6 +10,8 @@ export default function Reveal() {
   const [isReady, setIsReady] = useState(false)
   const [suspenseIndex, setSuspenseIndex] = useState(0)
 
+  console.log("REVEAL COMPONENT LOADED");
+
   const [personalAdvice] = useState(() => {
     return isImposter 
       ? (Math.random() > 0.5 ? "Observe others carefully" : "Blend in naturally")
@@ -58,13 +60,11 @@ export default function Reveal() {
 
   // Rotate suspense messages
   useEffect(() => {
-    if (revealStage === 'revealed') {
-      const interval = setInterval(() => {
-        setSuspenseIndex((prev) => (prev + 1) % suspenseMessages.length)
-      }, 3000)
-      return () => clearInterval(interval)
-    }
-  }, [revealStage, suspenseMessages.length])
+    const interval = setInterval(() => {
+      setSuspenseIndex((prev) => (prev + 1) % suspenseMessages.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="text-center min-h-screen flex flex-col items-center justify-center px-4 overflow-y-auto w-full gap-6">
@@ -84,9 +84,9 @@ export default function Reveal() {
         disabled={revealStage !== 'locked'}
         className={`relative mx-auto w-full max-w-xs p-8 rounded-[2rem] transition-all duration-500 ease-out flex flex-col items-center justify-center min-h-[240px] focus:outline-none ${
           revealStage === 'locked' 
-            ? 'bg-gradient-to-br from-slate-800 to-black border border-slate-700 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:scale-[1.02] active:scale-[0.96] cursor-pointer hover:shadow-[0_0_35px_rgba(255,255,255,0.08)]'
+            ? 'bg-gradient-to-br from-slate-800 to-black border border-slate-700 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:scale-[1.02] active:scale-[0.96] cursor-pointer hover:shadow-[0_0_35px_rgba(255,255,255,0.08)] animate-neutral-aura'
             : revealStage === 'anticipating'
-            ? 'bg-gradient-to-br from-slate-700 to-slate-900 border border-slate-500 scale-[1.04] shadow-[0_0_40px_rgba(255,255,255,0.15)] cursor-default'
+            ? 'bg-gradient-to-br from-slate-700 to-slate-900 border border-slate-500 scale-[1.04] shadow-[0_0_40px_rgba(255,255,255,0.15)] cursor-default animate-neutral-aura'
             : 'bg-gradient-to-br from-slate-800 to-[#0d1326] border border-slate-500/30 scale-100 cursor-default animate-neutral-aura'
         }`}
         style={{ touchAction: 'manipulation' }}
@@ -153,21 +153,19 @@ export default function Reveal() {
         )}
       </button>
 
-      {/* Suspense Messages */}
-      {revealStage === 'revealed' && (
-        <div className="h-6 relative w-full flex justify-center mt-3 mb-1 opacity-0 animate-[fade-in_1s_ease-out_forwards]" style={{ animationDelay: '1500ms' }}>
-          {suspenseMessages.map((msg, idx) => (
-            <p
-              key={idx}
-              className={`absolute text-[11px] uppercase tracking-[0.15em] text-slate-500 font-bold text-center transition-opacity duration-1000 ${
-                suspenseIndex === idx ? 'opacity-80' : 'opacity-0'
-              }`}
-            >
-              {msg}
-            </p>
-          ))}
-        </div>
-      )}
+      {/* Suspense Messages - Debug Mode (Visible Always) */}
+      <div className="h-6 relative w-full flex justify-center mt-4">
+        {suspenseMessages.map((msg, idx) => (
+          <p
+            key={idx}
+            className={`absolute text-white text-base font-bold text-center transition-opacity duration-1000 ${
+              suspenseIndex === idx ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            {msg}
+          </p>
+        ))}
+      </div>
 
       {/* Ready button (only after card flip) */}
       {revealStage === 'revealed' && !isReady && (
