@@ -293,3 +293,6 @@ body {
 .animate-float { animation: floatSubtle 3s ease-in-out infinite; }
 @keyframes intenseGlow { 0% { box-shadow: 0 0 20px rgba(163, 230, 53, 0.1); } 50% { box-shadow: 0 0 50px rgba(163, 230, 53, 0.4); } 100% { box-shadow: 0 0 20px rgba(163, 230, 53, 0.1); } }
 .animate-glow-pulse { animation: intenseGlow 2s ease-in-out infinite; }
+
+@keyframes neutralAura { 0% { box-shadow: 0 0 15px rgba(226, 232, 240, 0.05); transform: scale(1); } 50% { box-shadow: 0 0 35px rgba(226, 232, 240, 0.12); transform: scale(1.005); } 100% { box-shadow: 0 0 15px rgba(226, 232, 240, 0.05); transform: scale(1); } }
+.animate-neutral-aura { animation: neutralAura 4s ease-in-out infinite; }

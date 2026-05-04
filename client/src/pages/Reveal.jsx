@@ -14,7 +14,8 @@ export default function Reveal() {
     "One of you is lying 👀",
     "Think before you speak...",
     "Trust no one",
-    "Not everyone knows the word"
+    "Not everyone knows the word",
+    "Say less, think more"
   ]
 
   const safeWord = myWord || "";
@@ -75,12 +76,12 @@ export default function Reveal() {
         id="word-card"
         onClick={handleReveal}
         disabled={revealStage !== 'locked'}
-        className={`relative mx-auto w-full max-w-xs p-8 rounded-[2rem] transition-all duration-300 ease-out flex flex-col items-center justify-center min-h-[240px] focus:outline-none ${
+        className={`relative mx-auto w-full max-w-xs p-8 rounded-[2rem] transition-all duration-500 ease-out flex flex-col items-center justify-center min-h-[240px] focus:outline-none ${
           revealStage === 'locked' 
             ? 'bg-gradient-to-br from-slate-800 to-black border border-slate-700 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:scale-[1.02] active:scale-[0.96] cursor-pointer hover:shadow-[0_0_35px_rgba(255,255,255,0.08)]'
             : revealStage === 'anticipating'
             ? 'bg-gradient-to-br from-slate-700 to-slate-900 border border-slate-500 scale-[1.04] shadow-[0_0_40px_rgba(255,255,255,0.15)] cursor-default'
-            : 'bg-gradient-to-br from-slate-900 to-black border border-accent/40 shadow-[0_0_45px_rgba(163,230,53,0.18)] scale-100 cursor-default animate-glow-pulse'
+            : 'bg-gradient-to-br from-slate-800 to-[#0d1326] border border-slate-500/30 scale-100 cursor-default animate-neutral-aura'
         }`}
         style={{ touchAction: 'manipulation' }}
       >
@@ -145,12 +146,12 @@ export default function Reveal() {
 
       {/* Suspense Messages */}
       {revealStage === 'revealed' && (
-        <div className="h-6 relative w-full flex justify-center mt-2 opacity-0 animate-[fade-in_1s_ease-out_forwards]" style={{ animationDelay: '1000ms' }}>
+        <div className="h-6 relative w-full flex justify-center mt-3 mb-1 opacity-0 animate-[fade-in_1s_ease-out_forwards]" style={{ animationDelay: '1500ms' }}>
           {suspenseMessages.map((msg, idx) => (
             <p
               key={idx}
-              className={`absolute text-sm text-slate-500 font-medium tracking-wide transition-opacity duration-1000 ${
-                suspenseIndex === idx ? 'opacity-100' : 'opacity-0'
+              className={`absolute text-[11px] uppercase tracking-[0.15em] text-slate-500 font-bold text-center transition-opacity duration-1000 ${
+                suspenseIndex === idx ? 'opacity-80' : 'opacity-0'
               }`}
             >
               {msg}
@@ -163,7 +164,7 @@ export default function Reveal() {
       {revealStage === 'revealed' && !isReady && (
         <button
           id="ready-btn"
-          className="btn btn-primary"
+          className="btn btn-primary w-full max-w-xs mx-auto"
           onClick={handleReadyClick}
         >
           ✓ I'm Ready
