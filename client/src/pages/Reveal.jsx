@@ -8,15 +8,19 @@ export default function Reveal() {
   const { myWord, isImposter, readyCount, totalCount, readyPlayerIds } = state
   const [revealStage, setRevealStage] = useState('locked') // 'locked' | 'anticipating' | 'revealed'
   const [isReady, setIsReady] = useState(false)
-  const [suspenseIndex, setSuspenseIndex] = useState(0)
+  const [personalMessage] = useState(() => {
+    const normalMsgs = ["Be subtle", "Don't make it obvious", "Choose your words carefully"];
+    const imposterMsgs = ["Watch others closely", "Fake confidence", "Blend in naturally"];
+    const pool = isImposter ? imposterMsgs : normalMsgs;
+    return pool[Math.floor(Math.random() * pool.length)];
+  });
 
-  const suspenseMessages = [
+  const globalMessages = [
     "One of you is lying 👀",
-    "Think before you speak...",
     "Trust no one",
-    "Not everyone knows the word",
-    "Say less, think more"
-  ]
+    "Think before you speak"
+  ];
+  const [globalIndex, setGlobalIndex] = useState(0);
 
   const safeWord = myWord || "";
   const key = safeWord.toLowerCase ? safeWord.toLowerCase().trim() : "";
@@ -50,15 +54,13 @@ export default function Reveal() {
     }
   }
 
-  // Rotate suspense messages
+  // Rotate global messages
   useEffect(() => {
-    if (revealStage === 'revealed') {
-      const interval = setInterval(() => {
-        setSuspenseIndex((prev) => (prev + 1) % suspenseMessages.length)
-      }, 3000)
-      return () => clearInterval(interval)
-    }
-  }, [revealStage, suspenseMessages.length])
+    const interval = setInterval(() => {
+      setGlobalIndex((prev) => (prev + 1) % globalMessages.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="text-center min-h-screen flex flex-col items-center justify-center px-4 overflow-y-auto w-full gap-6">
@@ -132,43 +134,31 @@ export default function Reveal() {
               </p>
             )}
 
-            {/* Layer 4: Role Message (Delayed fade in) */}
-            <div className="mt-5 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 opacity-0 animate-[fade-in_0.5s_ease-out_forwards] shadow-lg" style={{ animationDelay: '600ms' }}>
-              <p className={`text-[13px] font-bold tracking-wide text-center leading-tight ${isImposter ? 'text-danger/90' : 'text-accent/90'}`}>
-                {isImposter 
-                  ? "You don't know the word. Blend in carefully." 
-                  : "Protect this word. Don't be obvious."}
+            {/* Task 4: Personal & Global Text (No Color Bias) */}
+            <div className="mt-6 flex flex-col items-center opacity-0 animate-[fade-in_0.5s_ease-out_forwards]" style={{ animationDelay: '600ms' }}>
+              <p className="text-[13px] font-bold text-white tracking-wide text-center mb-1">
+                {isImposter ? "You are the Imposter" : "You have the Word"}
               </p>
+              <p className="text-sm text-white/80 font-medium text-center italic">
+                "{personalMessage}"
+              </p>
+
+              <div className="mt-4 h-4 relative w-full flex justify-center">
+                {globalMessages.map((msg, idx) => (
+                  <p
+                    key={idx}
+                    className={`absolute text-xs text-white/50 font-bold uppercase tracking-widest text-center transition-all duration-1000 ${
+                      globalIndex === idx ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                    }`}
+                  >
+                    {msg}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
         )}
       </button>
- 
-      {/* STEP 2: STATIC SUSPENSE TEXT */}
-      <div style={{
-        color: "white",
-        fontSize: "16px",
-        textAlign: "center",
-        marginTop: "20px"
-      }}>
-        One of you is lying 👀
-      </div>
- 
-      {/* Suspense Messages */}
-      {revealStage === 'revealed' && (
-        <div className="h-6 relative w-full flex justify-center mt-3 mb-1 opacity-0 animate-[fade-in_1s_ease-out_forwards]" style={{ animationDelay: '1500ms' }}>
-          {suspenseMessages.map((msg, idx) => (
-            <p
-              key={idx}
-              className={`absolute text-[11px] uppercase tracking-[0.15em] text-slate-500 font-bold text-center transition-opacity duration-1000 ${
-                suspenseIndex === idx ? 'opacity-80' : 'opacity-0'
-              }`}
-            >
-              {msg}
-            </p>
-          ))}
-        </div>
-      )}
 
       {/* Ready button (only after card flip) */}
       {revealStage === 'revealed' && !isReady && (
