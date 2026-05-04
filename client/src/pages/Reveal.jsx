@@ -15,13 +15,6 @@ export default function Reveal() {
     return pool[Math.floor(Math.random() * pool.length)];
   });
 
-  const globalMessages = [
-    "One of you is lying 👀",
-    "Trust no one",
-    "Think before you speak"
-  ];
-  const [globalIndex, setGlobalIndex] = useState(0);
-
   const safeWord = myWord || "";
   const key = safeWord.toLowerCase ? safeWord.toLowerCase().trim() : "";
   const wordData = WORD_DICTIONARY[key] || {};
@@ -54,13 +47,7 @@ export default function Reveal() {
     }
   }
 
-  // Rotate global messages
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setGlobalIndex((prev) => (prev + 1) % globalMessages.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
+  // Removed global message rotation logic
 
   return (
     <div className="text-center min-h-screen flex flex-col items-center justify-center px-4 overflow-y-auto w-full gap-6">
@@ -121,40 +108,14 @@ export default function Reveal() {
               )}
             </div>
 
-            <div className="h-px w-full max-w-[120px] bg-slate-700/60 my-4 rounded-full opacity-0 animate-[fade-in_0.3s_ease-out_forwards]" style={{ animationDelay: '300ms' }}></div>
-
-            {/* Layer 3: Clue Hint (Fade Delay) */}
-            {wordData?.meaning ? (
-              <p className="text-slate-300 text-[14px] font-medium tracking-wide text-center px-4 opacity-0 animate-[fade-in_0.4s_ease-out_forwards] leading-snug" style={{ animationDelay: '400ms' }}>
-                "{wordData.meaning}"
-              </p>
-            ) : (
-              <p className="text-slate-400 text-xs font-medium uppercase tracking-widest opacity-0 animate-[fade-in_0.4s_ease-out_forwards]" style={{ animationDelay: '400ms' }}>
-                Memorize it carefully
-              </p>
-            )}
-
-            {/* Task 4: Personal & Global Text (No Color Bias) */}
-            <div className="mt-6 flex flex-col items-center w-full">
-              <p className="text-[13px] font-bold text-white tracking-wide text-center mb-1">
+            {/* Simplified Role & Advice Block */}
+            <div className="mt-8 flex flex-col items-center w-full border-t border-white/10 pt-6">
+              <p className="text-[14px] font-black text-white tracking-[0.1em] uppercase text-center mb-1.5">
                 {isImposter ? "You are the Imposter" : "You have the Word"}
               </p>
-              <p className="text-sm text-white/80 font-medium text-center italic">
+              <p className="text-[13px] text-white/70 font-medium text-center italic tracking-wide">
                 "{personalMessage}"
               </p>
-
-              <div className="mt-4 h-4 relative w-full flex justify-center">
-                {globalMessages.map((msg, idx) => (
-                  <p
-                    key={idx}
-                    className={`absolute text-xs text-white/50 font-bold uppercase tracking-widest text-center transition-all duration-1000 ${
-                      globalIndex === idx ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-                    }`}
-                  >
-                    {msg}
-                  </p>
-                ))}
-              </div>
             </div>
           </div>
         )}
