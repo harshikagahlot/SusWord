@@ -30,12 +30,14 @@ export default function Reveal() {
   const key = safeWord.toLowerCase ? safeWord.toLowerCase().trim() : "";
   const wordData = WORD_DICTIONARY[key] || {};
 
-  console.log("STATE:", state);
-  console.log("WORD:", myWord);
+  console.log("REVEAL RENDERED");
 
   if (!myWord) {
     return ( 
       <div className="text-white text-center mt-10">
+        <div style={{color: "red", fontSize: "20px", fontWeight: "bold", marginBottom: "20px"}}>
+          DEBUG: REVEAL ACTIVE (LOADING STATE)
+        </div>
         Loading reveal... 
       </div>
     );
@@ -68,6 +70,9 @@ export default function Reveal() {
 
   return (
     <div className="text-center min-h-screen flex flex-col items-center justify-center px-4 overflow-y-auto w-full gap-6">
+      <div style={{color: "red", fontSize: "20px", fontWeight: "bold", position: "fixed", top: "10px", width: "100%", zIndex: 10000}}>
+        DEBUG: REVEAL ACTIVE
+      </div>
       <div>
         <h2 className="text-xs uppercase tracking-widest text-text-muted mb-2">
           Secret Word
@@ -152,6 +157,22 @@ export default function Reveal() {
           </div>
         )}
       </button>
+
+      {/* STEP 2: FORCE TEXT VISIBILITY (IMPOSSIBLE TO MISS) */}
+      <div style={{
+        color: "yellow",
+        fontSize: "18px",
+        textAlign: "center",
+        marginTop: "20px",
+        background: "rgba(255,0,0,0.8)",
+        padding: "20px",
+        borderRadius: "15px",
+        fontWeight: "bold",
+        border: "3px solid white",
+        zIndex: 9999
+      }}>
+        TEST MESSAGE VISIBLE
+      </div>
 
       {/* Suspense Messages - Debug Mode (Visible Always) */}
       <div className="h-6 relative w-full flex justify-center mt-4">
