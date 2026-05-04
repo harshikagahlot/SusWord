@@ -17,12 +17,23 @@ export default function Reveal() {
     "Not everyone knows the word"
   ]
 
-  const key = myWord?.toLowerCase().trim();
-  const wordData = WORD_DICTIONARY[key];
+  const key = (myWord || '').toLowerCase().trim();
+  const wordData = WORD_DICTIONARY[key] || {};
 
   console.log("WORD:", myWord);
   console.log("KEY:", key);
   console.log("DATA:", wordData);
+
+  if (!myWord) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-slate-400 font-medium">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+          <p>Loading your word...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleReveal = () => {
     if (revealStage !== 'locked') return
