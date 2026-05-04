@@ -94,16 +94,25 @@ export default function Reveal() {
 
             <div className="h-px w-full max-w-[120px] bg-slate-700/60 my-4 rounded-full opacity-0 animate-[fade-in_0.3s_ease-out_forwards]" style={{ animationDelay: '300ms' }}></div>
 
-            {/* Layer 3: Meaning (Fade Delay) */}
+            {/* Layer 3: Clue Hint (Fade Delay) */}
             {wordData?.meaning ? (
-              <p className="text-slate-300 text-[13px] font-medium tracking-wide text-center px-2 opacity-0 animate-[fade-in_0.4s_ease-out_forwards]" style={{ animationDelay: '400ms' }}>
-                {wordData.meaning}
+              <p className="text-slate-300 text-[14px] font-medium tracking-wide text-center px-4 opacity-0 animate-[fade-in_0.4s_ease-out_forwards] leading-snug" style={{ animationDelay: '400ms' }}>
+                "{wordData.meaning}"
               </p>
             ) : (
               <p className="text-slate-400 text-xs font-medium uppercase tracking-widest opacity-0 animate-[fade-in_0.4s_ease-out_forwards]" style={{ animationDelay: '400ms' }}>
                 Memorize it carefully
               </p>
             )}
+
+            {/* Layer 4: Role Message (Delayed fade in) */}
+            <div className="mt-5 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 opacity-0 animate-[fade-in_0.5s_ease-out_forwards] shadow-lg" style={{ animationDelay: '600ms' }}>
+              <p className={`text-[13px] font-bold tracking-wide text-center leading-tight ${wordData?.isImposter ? 'text-danger/90' : 'text-accent/90'}`}>
+                {wordData?.isImposter 
+                  ? "You don't know the word. Blend in carefully." 
+                  : "Protect this word. Don't be obvious."}
+              </p>
+            </div>
           </div>
         )}
       </button>
