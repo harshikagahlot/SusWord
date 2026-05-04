@@ -6,6 +6,7 @@ export default function Card3D({
   style = {}, 
   onClick,
   disabled = false,
+  // eslint-disable-next-line no-unused-vars
   as: Component = 'div',
   ...props
 }) {

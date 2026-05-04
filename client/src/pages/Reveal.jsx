@@ -3,7 +3,7 @@ import { useGame } from '../context/GameContext'
 
 export default function Reveal() {
   const { state, actions } = useGame()
-  const { myWord, readyCount, totalCount, readyPlayerIds, currentPlayerId } = state
+  const { myWord, readyCount, totalCount, readyPlayerIds } = state
   const [isFlipped, setIsFlipped] = useState(false)
   const [isReady, setIsReady] = useState(false)
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useGame } from '../context/GameContext'
+import Card3D from '../components/Card3D'
 
 export default function ClueRound() {
   const { state, actions } = useGame()
@@ -116,9 +117,8 @@ export default function ClueRound() {
           </p>
           <div className="flex flex-col gap-2.5">
             {clues.map((c, i) => {
-              const isMyClue = c.playerName === currentTurnPlayer?.name && isMyTurn; // Just for visual feedback if we wanted
               return (
-                <div key={i} className="player-card flex items-center gap-3.5"
+                <Card3D key={i} className="flex items-center gap-3.5 px-4 py-3.5"
                   style={{
                     background: 'rgba(31,41,55,0.7)',
                     border: '1px solid rgba(55,65,81,0.7)',
@@ -143,7 +143,7 @@ export default function ClueRound() {
                       "{c.clue}"
                     </p>
                   </div>
-                </div>
+                </Card3D>
               )
             })}
           </div>

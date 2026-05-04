@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 
 export default function Home() {
-  const { actions, state } = useGame()
+  const { actions } = useGame()
   const [name, setName] = useState('')
   const [roomCode, setRoomCode] = useState('')
   const [mode, setMode] = useState(null) // null | 'create' | 'join'

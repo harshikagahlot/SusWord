@@ -263,6 +263,7 @@ export function GameProvider({ children }) {
           })
         })
       } catch (err) {
+        console.error(err)
         dispatch({ type: 'SET_ERROR', error: 'Failed to connect to server. Is it running?' })
       }
     }, []),
@@ -280,6 +281,7 @@ export function GameProvider({ children }) {
           })
         })
       } catch (err) {
+        console.error(err)
         dispatch({ type: 'SET_ERROR', error: 'Failed to connect to server. Is it running?' })
       }
     }, []),
@@ -338,6 +340,7 @@ export function GameProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useGame() {
   const context = useContext(GameContext)
   if (!context) throw new Error('useGame must be used within GameProvider')
