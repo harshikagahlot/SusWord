@@ -64,14 +64,22 @@ export default function Card3D({
     transformStyle: 'preserve-3d',
     willChange: 'transform, box-shadow',
     // Snap immediately on move, ease back on leave/press
-    transition: isHovered && !isPressed ? 'transform 0.1s linear, box-shadow 0.15s ease-out' : 'transform 0.2s ease-out, box-shadow 0.2s ease-out',
+    transition: isHovered && !isPressed ? 'transform 0.1s linear, box-shadow 0.15s ease-out' : 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease-out',
+    // 3D Bevel/Lip effect at rest
+    borderBottomWidth: '4px',
+    marginBottom: '0px',
+    borderColor: 'rgba(0,0,0,0.3)',
     ...style,
   }
 
   if (isPressed) {
-    baseStyle.transform = 'perspective(1000px) scale3d(0.95, 0.95, 0.95)'
-    // Keep user shadow or fallback
-    baseStyle.boxShadow = style.boxShadow ? style.boxShadow.replace(/rgba\([^)]+\)/g, 'rgba(0,0,0,0.15)') : '0 2px 8px rgba(0,0,0,0.2)'
+    baseStyle.transform = 'perspective(1000px) scale3d(0.96, 0.96, 0.96) translateY(2px)'
+    // Flatten the shadow when pressed to simulate physical button press
+    baseStyle.boxShadow = style.boxShadow 
+      ? style.boxShadow.replace(/rgba\([^)]+\)/g, 'rgba(0,0,0,0.15)') 
+      : '0 0 0 rgba(0,0,0,0.2)'
+    baseStyle.borderBottomWidth = '1px'
+    baseStyle.marginBottom = '3px'
   } else if (isHovered) {
     baseStyle.transform = transform
     // Enhance shadow on hover
