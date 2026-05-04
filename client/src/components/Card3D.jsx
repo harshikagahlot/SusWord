@@ -58,45 +58,35 @@ export default function Card3D({
     setIsPressed(false)
   }
 
-  // Base styles
-  const baseStyle = {
-    position: 'relative',
-    transformStyle: 'preserve-3d',
-    willChange: 'transform, box-shadow',
-    // Snap immediately on move, ease back on leave/press
-    transition: isHovered && !isPressed ? 'transform 0.1s linear, box-shadow 0.15s ease-out' : 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease-out',
-    // 3D Bevel/Lip effect at rest
-    borderBottomWidth: '4px',
-    marginBottom: '0px',
-    borderColor: 'rgba(0,0,0,0.3)',
-    ...style,
+  // FORCE NEW UI STYLES
+  const isDanger = props.isDanger || false
+  const isHighlight = props.isHighlighted || false
+
+  let gradientClass = 'bg-gradient-to-br from-slate-800 to-slate-900'
+  let borderClass = 'border border-slate-700'
+  let shadowClass = 'shadow-xl'
+
+  if (isDanger) {
+    gradientClass = 'bg-gradient-to-br from-red-900/40 to-slate-900'
+    borderClass = 'border-2 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.3)]'
+  } else if (isHighlight) {
+    gradientClass = 'bg-gradient-to-br from-lime-900/30 to-slate-900'
+    borderClass = 'border-2 border-lime-400/40 shadow-[0_0_15px_rgba(163,230,53,0.3)]'
   }
 
-  if (isPressed) {
-    baseStyle.transform = 'perspective(1000px) scale3d(0.96, 0.96, 0.96) translateY(2px)'
-    // Flatten the shadow when pressed to simulate physical button press
-    baseStyle.boxShadow = style.boxShadow 
-      ? style.boxShadow.replace(/rgba\([^)]+\)/g, 'rgba(0,0,0,0.15)') 
-      : '0 0 0 rgba(0,0,0,0.2)'
-    baseStyle.borderBottomWidth = '1px'
-    baseStyle.marginBottom = '3px'
-  } else if (isHovered) {
-    baseStyle.transform = transform
-    // Enhance shadow on hover
-    if (style.boxShadow) {
-      baseStyle.boxShadow = style.boxShadow + ', 0 8px 24px rgba(0,0,0,0.3)'
-    } else {
-      baseStyle.boxShadow = '0 8px 24px rgba(0,0,0,0.3)'
-    }
+  // Combine interactions
+  let interactionClass = ''
+  if (!disabled) {
+    interactionClass = 'transition-all duration-200 ease-out hover:-translate-y-1.5 hover:scale-105 active:scale-95 active:translate-y-0'
   }
 
-  const combinedClassName = `relative overflow-hidden rounded-2xl ${className} ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`
+  const combinedClassName = `relative overflow-hidden rounded-2xl p-5 w-full flex items-center gap-4 ${gradientClass} ${borderClass} ${shadowClass} ${interactionClass} ${className} ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`
 
   return (
     <Component
       ref={cardRef}
       className={combinedClassName}
-      style={baseStyle}
+      style={{ transformStyle: 'preserve-3d', ...style }}
       onClick={!disabled ? onClick : undefined}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}

@@ -120,18 +120,7 @@ export default function Lobby() {
               <Card3D
                 key={player.id}
                 id={`lobby-player-${player.id}`}
-                className="flex items-center gap-3 px-4 py-3.5"
-                style={{
-                  background: isMe
-                    ? 'linear-gradient(135deg, rgba(163,230,53,0.08), rgba(163,230,53,0.02))'
-                    : 'rgba(31,41,55,0.7)',
-                  border: isMe
-                    ? '1.5px solid rgba(163,230,53,0.22)'
-                    : '1px solid rgba(55,65,81,0.7)',
-                  boxShadow: isMe
-                    ? '0 2px 14px rgba(163,230,53,0.07)'
-                    : '0 2px 8px rgba(0,0,0,0.18)',
-                }}
+                isHighlighted={isMe}
               >
                 {/* Avatar */}
                 <div

@@ -51,12 +51,6 @@ export default function Voting() {
               style={
                 isSelected
                   ? {}
-                  : {
-                      background: 'rgba(31,41,55,0.75)',
-                      border: '1px solid rgba(55,65,81,0.8)',
-                      boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
-                    }
-              }
             >
               {/* Avatar */}
               <div
