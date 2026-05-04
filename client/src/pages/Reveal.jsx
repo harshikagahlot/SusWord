@@ -2,23 +2,47 @@ import { useState } from 'react'
 import { useGame } from '../context/GameContext'
 
 const WORD_DICTIONARY = {
-  "apple": { emoji: "🍎", meaning: "A sweet red or green fruit" },
-  "banana": { emoji: "🍌", meaning: "A long curved yellow fruit" },
-  "pizza": { emoji: "🍕", meaning: "A flat round dough baked with cheese" },
-  "cat": { emoji: "🐱", meaning: "A small domesticated feline" },
-  "dog": { emoji: "🐶", meaning: "A domesticated canine" },
-  "car": { emoji: "🚗", meaning: "A four-wheeled road vehicle" },
-  "hospital": { emoji: "🏥", meaning: "An institution providing medical treatment" },
-  "school": { emoji: "🏫", meaning: "An institution for educating students" },
-  "teacher": { emoji: "👨‍🏫", meaning: "A person who teaches in a school" },
-  "doctor": { emoji: "👨‍⚕️", meaning: "A qualified practitioner of medicine" },
-  "ocean": { emoji: "🌊", meaning: "A very large expanse of sea" },
-  "mountain": { emoji: "⛰️", meaning: "A large natural elevation of the earth" },
-  "computer": { emoji: "💻", meaning: "An electronic device for processing data" },
-  "phone": { emoji: "📱", meaning: "A portable communication device" },
-  "sun": { emoji: "☀️", meaning: "The star around which the earth orbits" },
-  "moon": { emoji: "🌙", meaning: "The natural satellite of the earth" },
-}
+  "submarine": {
+    emoji: "🚢",
+    meaning: "A vessel that travels underwater"
+  },
+  "gym": {
+    emoji: "🏋️",
+    meaning: "A place where people exercise"
+  },
+  "doctor": {
+    emoji: "🩺",
+    meaning: "A person who treats patients"
+  },
+  "teacher": {
+    emoji: "👩‍🏫",
+    meaning: "A person who teaches students"
+  },
+  "school": {
+    emoji: "🏫",
+    meaning: "A place for education"
+  },
+  "police": {
+    emoji: "👮",
+    meaning: "A person who maintains law and order"
+  },
+  "pizza": {
+    emoji: "🍕",
+    meaning: "A popular baked dish with toppings"
+  },
+  "car": {
+    emoji: "🚗",
+    meaning: "A vehicle used for transportation"
+  },
+  "phone": {
+    emoji: "📱",
+    meaning: "A device used for communication"
+  },
+  "computer": {
+    emoji: "💻",
+    meaning: "An electronic machine for computing"
+  }
+};
 
 export default function Reveal() {
   const { state, actions } = useGame()
@@ -26,7 +50,12 @@ export default function Reveal() {
   const [revealStage, setRevealStage] = useState('locked') // 'locked' | 'anticipating' | 'revealed'
   const [isReady, setIsReady] = useState(false)
 
-  const wordInfo = WORD_DICTIONARY[myWord?.toLowerCase()] || null
+  const key = myWord?.toLowerCase().trim();
+  const wordData = WORD_DICTIONARY[key];
+
+  console.log("WORD:", myWord);
+  console.log("KEY:", key);
+  console.log("DATA:", wordData);
 
   const handleReveal = () => {
     if (revealStage !== 'locked') return
@@ -46,13 +75,15 @@ export default function Reveal() {
   }
 
   return (
-    <div className="text-center">
-      <h2 className="text-xs uppercase tracking-widest text-text-muted mb-2">
-        Secret Word
-      </h2>
-      <p className="text-text-muted text-sm mb-6">
-        Tap the card to reveal your word. Don't show anyone!
-      </p>
+    <div className="text-center min-h-screen flex flex-col items-center justify-center px-4 overflow-y-auto w-full gap-6">
+      <div>
+        <h2 className="text-xs uppercase tracking-widest text-text-muted mb-2">
+          Secret Word
+        </h2>
+        <p className="text-text-muted text-sm">
+          Tap the card to reveal your word. Don't show anyone!
+        </p>
+      </div>
 
       {/* Single Unified Reveal Card */}
       <button
@@ -95,9 +126,9 @@ export default function Reveal() {
               </p>
 
               {/* Layer 2: Emoji (Bounce Delay) */}
-              {wordInfo && (
+              {wordData?.emoji && (
                 <div className="text-4xl mt-3 opacity-0 animate-bounce-pop drop-shadow-xl" style={{ animationDelay: '150ms' }}>
-                  {wordInfo.emoji}
+                  {wordData.emoji}
                 </div>
               )}
             </div>
@@ -105,13 +136,13 @@ export default function Reveal() {
             <div className="h-px w-full max-w-[120px] bg-slate-700/60 my-4 rounded-full opacity-0 animate-[fade-in_0.3s_ease-out_forwards]" style={{ animationDelay: '300ms' }}></div>
 
             {/* Layer 3: Meaning (Fade Delay) */}
-            {wordInfo ? (
+            {wordData?.meaning ? (
               <p className="text-slate-300 text-[13px] font-medium tracking-wide text-center px-2 opacity-0 animate-[fade-in_0.4s_ease-out_forwards]" style={{ animationDelay: '400ms' }}>
-                {wordInfo.meaning}
+                {wordData.meaning}
               </p>
             ) : (
               <p className="text-slate-400 text-xs font-medium uppercase tracking-widest opacity-0 animate-[fade-in_0.4s_ease-out_forwards]" style={{ animationDelay: '400ms' }}>
-                Memorize it. Do not say it aloud.
+                Memorize it carefully
               </p>
             )}
           </div>
