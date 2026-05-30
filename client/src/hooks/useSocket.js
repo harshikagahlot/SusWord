@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client'
 
-// Use environment variable, fallback to Railway in production, or localhost in dev
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? 'http://localhost:3001' : 'https://susword-backend-production.up.railway.app')
+// Use environment variable, fallback to Render in production, or localhost in dev
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? 'http://localhost:3001' : 'https://susword-backend.onrender.com')
 
 // Single socket instance shared across the app
 let socket = null
